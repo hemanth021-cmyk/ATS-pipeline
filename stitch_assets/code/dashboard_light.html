@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e8eff3",
+                    "on-secondary-container": "#435368",
+                    "on-secondary-fixed": "#314055",
+                    "primary-fixed": "#dbe1ff",
+                    "on-primary-container": "#0048bf",
+                    "tertiary-fixed-dim": "#58e7ab",
+                    "tertiary-fixed": "#69f6b8",
+                    "inverse-primary": "#618bff",
+                    "error": "#9f403d",
+                    "secondary-dim": "#44546a",
+                    "error-dim": "#4e0309",
+                    "error-container": "#fe8983",
+                    "on-secondary": "#f7f9ff",
+                    "tertiary-dim": "#005f40",
+                    "background": "#f7f9fb",
+                    "on-primary": "#f8f7ff",
+                    "surface-dim": "#cfdce3",
+                    "on-tertiary": "#e6ffee",
+                    "on-primary-fixed": "#003798",
+                    "primary-fixed-dim": "#c7d3ff",
+                    "secondary": "#506076",
+                    "primary-container": "#dbe1ff",
+                    "on-surface": "#2a3439",
+                    "on-tertiary-fixed": "#00452d",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-primary-fixed-variant": "#0050d4",
+                    "surface-tint": "#0053db",
+                    "on-tertiary-fixed-variant": "#006544",
+                    "on-error-container": "#752121",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#4d5d73",
+                    "surface-container-highest": "#d9e4ea",
+                    "on-surface-variant": "#566166",
+                    "inverse-on-surface": "#9a9d9f",
+                    "primary-dim": "#0048c1",
+                    "on-background": "#2a3439",
+                    "surface": "#f7f9fb",
+                    "on-error": "#fff7f6",
+                    "secondary-fixed-dim": "#c5d6f0",
+                    "primary": "#0053db",
+                    "on-tertiary-container": "#005a3c",
+                    "surface-variant": "#d9e4ea",
+                    "outline": "#717c82",
+                    "surface-container-high": "#e1e9ee",
+                    "outline-variant": "#a9b4b9",
+                    "tertiary": "#006d4a",
+                    "secondary-container": "#d3e4fe",
+                    "inverse-surface": "#0b0f10",
+                    "surface-container-low": "#f0f4f7",
+                    "tertiary-container": "#69f6b8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; color: #2a3439; }
+        .headline-font { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-effect { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- Predicted Component: SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-6 w-64 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-md z-50">
+<div class="mb-10">
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 headline-font">Executive Workspace</h1>
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-widest mt-1">Engineering Hiring</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-400 font-semibold bg-slate-200/50 dark:bg-slate-800/50 rounded-lg transition-all scale-95 duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/30 dark:hover:bg-slate-800/30 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="text-sm font-medium">Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/30 dark:hover:bg-slate-800/30 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-sm font-medium">Candidates</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/30 dark:hover:bg-slate-800/30 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto">
+<button class="w-full bg-primary text-on-primary py-3 px-4 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-95 shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Create New Job
+            </button>
+<div class="mt-6 flex items-center gap-3 px-2">
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover" data-alt="professional portrait of an executive man with a friendly expression in a modern office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu46tOTZGfmw4UOqPWPmBVSA0O4fcjWEESzeURmZLx488j8igujY31tTTJc1GWwaGlQrABIATFxGxbYrs-1oh80umvyNVuB7Bap2txhrDC_hFPNVa9FZUEwfBaMQ4mv0v5TPTnNZz9J0DAGi6wO5Os4Dd6i-5pdmMkuy0EVMHC8OrV7LP_9G4f6DfAnHtMGOrDbbophRa2eKxhr1sMYRgUAG6zaYvpj9ounLVbGsESURSV8pIyyXj8IE87HdLzz9yMYKk04Nuqr3Q5"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Lead Recruiter</p>
+<p class="text-[10px] text-on-surface-variant">Admin Access</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Predicted Component: TopAppBar -->
+<header class="sticky top-0 z-40 flex justify-between items-center w-full px-8 py-4 ml-64 bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-xl">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/20 rounded-full py-2.5 pl-12 pr-4 text-sm focus:ring-primary/40 focus:ring-2 transition-all" placeholder="Search candidates, roles, or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-opacity opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-opacity opacity-80">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/20 mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold headline-font text-on-surface">The Curator</span>
+<div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">TC</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 p-8 space-y-8">
+<!-- Metrics Section (Top Level) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl border-none transition-all hover:scale-[1.01]">
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2">Total Open Roles</p>
+<div class="flex items-baseline justify-between">
+<h3 class="text-4xl font-extrabold headline-font text-on-surface">12</h3>
+<span class="text-tertiary text-xs font-bold bg-tertiary-container/30 px-2 py-1 rounded-full">+2 this week</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border-none transition-all hover:scale-[1.01]">
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2">Active Candidates</p>
+<div class="flex items-baseline justify-between">
+<h3 class="text-4xl font-extrabold headline-font text-on-surface">3</h3>
+<span class="text-on-surface-variant text-xs font-bold bg-surface-container/50 px-2 py-1 rounded-full">Slots: 3/3</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border-none transition-all hover:scale-[1.01]">
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2">Average Queue Time</p>
+<div class="flex items-baseline justify-between">
+<h3 class="text-4xl font-extrabold headline-font text-on-surface">4.2d</h3>
+<span class="text-secondary text-xs font-bold bg-secondary-container/30 px-2 py-1 rounded-full">-12% from Oct</span>
+</div>
+</div>
+</section>
+<!-- Pipeline Board -->
+<section class="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+<!-- Column: Active (Capacity Restrained) -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<h4 class="headline-font font-bold text-on-surface flex items-center gap-2">
+                        Active 
+                        <span class="text-[10px] bg-primary text-on-primary px-2 py-0.5 rounded-full">Full</span>
+</h4>
+<span class="text-xs text-on-surface-variant font-medium">3 / 3 slots</span>
+</div>
+<div class="space-y-4">
+<!-- Active Card 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary group transition-all">
+<div class="flex justify-between items-start mb-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="headshot of a smiling developer with glasses in a casual tech environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBztQQ2WzEfd1e3uiBRuH-Oa-dlUPNHS5bx5efiMMCVk0UoXqlFS0RgDg7oFBqb8NDcPIg0Isj7u1FSaTTJNLeJ5HO7X-0OSMbgSm1AqcBT-v8M1TI83pMbmuTONqZGDYHULuBWgmhl8wBkIehZnIgcNvRC9fsxrOHEfo4n7LwTcBQywmrAvQb_Vxs8nJcLo3UNPjm_TI9Pn5NiPQSg8F7pdCxBRgAU8G0CIQtgME9zj85D-DNmpMbaww6Q2auGJvTrl66wif2SBPne"/>
+<span class="material-symbols-outlined text-outline-variant hover:text-primary cursor-pointer transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+<h5 class="font-bold text-on-surface">Alex Rivera</h5>
+<p class="text-xs text-on-surface-variant">Senior Backend Engineer</p>
+<div class="mt-4 flex items-center gap-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-bold">Interviewing</span>
+<span class="text-[10px] text-on-surface-variant font-medium ml-auto">Last act: 2h ago</span>
+</div>
+</div>
+<!-- Active Card 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary transition-all">
+<div class="flex justify-between items-start mb-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="modern professional woman in an office setting with focused expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtO122ricpkAm6vrA66DNaUNuNACK1yrBZEeNZbJQyZs7KuurY7tYTh4cGwYwtmkW2BS09I58zd17VYchfRe8dfo3-qhNg86SzzjmSKI_h04SQAOjbnTXF9lWLokeRisurqkfxDRZBaTt8rMB-MOcRDUNhB5CWlXSnYlk9P7riVyVvveonWlFw9e20zYh4RgwNuVQiL-n61NlbfJpghh_UZwCfK_J6ypN5RZDZg_89GW7rrV5GmyVMffGsWyEVWmQAgVhH6XP4nibe"/>
+<span class="material-symbols-outlined text-outline-variant hover:text-primary cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+<h5 class="font-bold text-on-surface">Sarah Chen</h5>
+<p class="text-xs text-on-surface-variant">Lead Product Designer</p>
+<div class="mt-4 flex items-center gap-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-bold">Offer Stage</span>
+<span class="text-[10px] text-on-surface-variant font-medium ml-auto">Last act: 5m ago</span>
+</div>
+</div>
+<!-- Active Card 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary transition-all">
+<div class="flex justify-between items-start mb-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="confident professional male portrait with minimal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7TMz0Qf9HG8ohPNAiV_W3-BNDAXcyIvTyv6V0gmjSAZzWwXOt77nzAnQ29uoxEcv0it5BAOQDwJ3UwOhb-JDFRUKVPI8sJ6Z3SQYyX_GNhb7LrwrYpXljg2pOiUbU9Dz_wDBBvg_1sG6j-hZnoCeI7b159j1ZBsHsC152YUnUJHavl_ZIfapR7q6pDeR6fJkzIzSA2l1AWByLJzZyGsZqcjG4B_pkzfVWlXWByd-mTGTDlD-CuninCIiHNPB8PZ0REiiC26bpEIty"/>
+<span class="material-symbols-outlined text-outline-variant hover:text-primary cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+<h5 class="font-bold text-on-surface">Marcus Thorne</h5>
+<p class="text-xs text-on-surface-variant">DevOps Lead</p>
+<div class="mt-4 flex items-center gap-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-bold">Tech Screen</span>
+<span class="text-[10px] text-on-surface-variant font-medium ml-auto">Last act: 1d ago</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Ack Pending (Time Sensitive) -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<h4 class="headline-font font-bold text-on-surface">Ack Pending</h4>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="timer">timer</span>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm ring-1 ring-secondary/20 relative overflow-hidden">
+<div class="absolute top-0 left-0 h-1 bg-error-container w-3/4"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-on-surface-variant">JL</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-error uppercase">Expires in</p>
+<p class="text-sm font-extrabold text-on-surface tabular-nums">01:42:12</p>
+</div>
+</div>
+<h5 class="font-bold text-on-surface">Jordan Lee</h5>
+<p class="text-xs text-on-surface-variant">Fullstack Dev</p>
+<div class="mt-4 flex gap-2">
+<button class="flex-1 text-[10px] font-bold py-2 bg-primary text-on-primary rounded-lg">Confirm</button>
+<button class="px-3 py-2 bg-surface-container text-on-surface-variant rounded-lg"><span class="material-symbols-outlined text-xs" data-icon="close">close</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Waitlisted (Priority Queue) -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<h4 class="headline-font font-bold text-on-surface">Waitlisted</h4>
+<span class="text-xs font-bold text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded-full">5 Total</span>
+</div>
+<div class="space-y-3">
+<!-- Waitlist Item 1 -->
+<div class="bg-surface-container-low p-3 rounded-xl flex items-center gap-3 transition-colors hover:bg-surface-container-high group">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-xs font-bold text-on-surface-variant">#1</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-on-surface">Elena Rodriguez</h5>
+<p class="text-[10px] text-on-surface-variant">QA Automation</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-primary/10 text-primary rounded-lg">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+<!-- Waitlist Item 2 -->
+<div class="bg-surface-container-low p-3 rounded-xl flex items-center gap-3 transition-colors hover:bg-surface-container-high group">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-xs font-bold text-on-surface-variant">#2</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-on-surface">Thomas Müller</h5>
+<p class="text-[10px] text-on-surface-variant">Site Reliability</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-primary/10 text-primary rounded-lg">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+<!-- Waitlist Item 3 -->
+<div class="bg-surface-container-low p-3 rounded-xl flex items-center gap-3 transition-colors hover:bg-surface-container-high group">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-xs font-bold text-on-surface-variant">#3</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-on-surface">Amina Okafor</h5>
+<p class="text-[10px] text-on-surface-variant">Data Scientist</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-primary/10 text-primary rounded-lg">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Column: Other (Archived/Status) -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<h4 class="headline-font font-bold text-on-surface">Other</h4>
+<button class="text-[10px] font-bold text-primary hover:underline">View All</button>
+</div>
+<div class="space-y-2 opacity-70 grayscale">
+<div class="bg-surface-container-lowest p-4 rounded-xl border-none">
+<h5 class="text-sm font-bold text-on-surface">Liam Foster</h5>
+<p class="text-[10px] text-on-surface-variant">Withdrawn • 2d ago</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl border-none">
+<h5 class="text-sm font-bold text-on-surface">Sofia Rossi</h5>
+<p class="text-[10px] text-on-surface-variant">Waitlist Expired • 4d ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Global Audit Trail (Asymmetric Bento Component) -->
+<section class="bg-surface-container-low p-8 rounded-2xl relative overflow-hidden">
+<div class="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-surface-container-highest/50 to-transparent pointer-events-none"></div>
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="text-2xl font-bold headline-font text-on-surface">Global Audit Trail</h3>
+<p class="text-sm text-on-surface-variant mt-1">Real-time transition monitoring and security logs</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-lowest px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-white transition-all">Export JSON</button>
+<button class="bg-surface-container-lowest px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-white transition-all">Filter logs</button>
+</div>
+</div>
+<div class="space-y-4 max-h-64 overflow-y-auto no-scrollbar pr-4">
+<!-- Log Entry 1 -->
+<div class="flex items-center gap-6 p-4 bg-surface-container-lowest rounded-xl border-none transition-all hover:translate-x-1">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-lg" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-on-surface">
+<span class="font-bold">Waitlist #1</span> promoted to <span class="font-bold text-primary">Active</span>
+</p>
+<p class="text-xs text-on-surface-variant">Candidate: Alex Rivera • Action by: system_auto</p>
+</div>
+<div class="text-right flex-shrink-0">
+<p class="text-xs font-bold text-on-surface-variant">2m ago</p>
+</div>
+</div>
+<!-- Log Entry 2 -->
+<div class="flex items-center gap-6 p-4 bg-surface-container-lowest rounded-xl border-none transition-all hover:translate-x-1">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-lg" data-icon="move_up">move_up</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-on-surface">
+<span class="font-bold">Jordan Lee</span> moved to <span class="font-bold text-on-secondary-container">Ack Pending</span>
+</p>
+<p class="text-xs text-on-surface-variant">Candidate promoted from Waitlist • 2h timer active</p>
+</div>
+<div class="text-right flex-shrink-0">
+<p class="text-xs font-bold text-on-surface-variant">18m ago</p>
+</div>
+</div>
+<!-- Log Entry 3 -->
+<div class="flex items-center gap-6 p-4 bg-surface-container-lowest rounded-xl border-none transition-all hover:translate-x-1">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-error-container/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-lg" data-icon="archive">archive</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-on-surface">
+<span class="font-bold">Liam Foster</span> transition to <span class="font-bold">Archived</span>
+</p>
+<p class="text-xs text-on-surface-variant">Status: Application Withdrawn</p>
+</div>
+<div class="text-right flex-shrink-0">
+<p class="text-xs font-bold text-on-surface-variant">2h ago</p>
+</div>
+</div>
+<!-- Log Entry 4 -->
+<div class="flex items-center gap-6 p-4 bg-surface-container-lowest rounded-xl border-none transition-all hover:translate-x-1">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-container-highest/40 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-lg" data-icon="history">history</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-on-surface">
+                            Queue re-ordered for <span class="font-bold">Engineering</span> track
+                        </p>
+<p class="text-xs text-on-surface-variant">Automated daily priority sweep completed</p>
+</div>
+<div class="text-right flex-shrink-0">
+<p class="text-xs font-bold text-on-surface-variant">4h ago</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

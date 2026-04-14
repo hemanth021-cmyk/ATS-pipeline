@@ -1,0 +1,250 @@
+Here's a comprehensive, detailed plan for your ATS pipeline tool — covering architecture, database schema, API design, frontend, the concurrency problem, and the inactivity decay system.Here's the full detailed plan.
+
+---
+
+## Project structure
+
+```
+/ats-pipeline
+├── /backend
+│   ├── /src
+│   │   ├── /routes          # Express route files
+│   │   ├── /controllers     # Request handlers
+│   │   ├── /services        # Pipeline engine, decay scheduler
+│   │   ├── /middleware      # Auth, error handling, concurrency lock
+│   │   ├── /db              # pg pool, migrations, seed
+│   │   └── index.js
+│   ├── .env
+│   └── package.json
+├── /frontend
+│   ├── /src
+│   │   ├── /pages           # CompanyDashboard, ApplicantView
+│   │   ├── /components      # PipelineBoard, StatusBadge, etc.
+│   │   ├── /api             # Axios instance + query hooks
+│   │   └── main.jsx
+│   └── package.json
+└── README.md
+```
+
+---
+
+## Database schema (PostgreSQL)
+
+**Four tables cover all requirements.**
+
+### `jobs`
+```sql
+CREATE TABLE jobs (
+  id            SERIAL PRIMARY KEY,
+  company_id    INTEGER NOT NULL,
+  title         VARCHAR(255) NOT NULL,
+  description   TEXT,
+  active_capacity INTEGER NOT NULL CHECK (active_capacity > 0),
+  status        VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open','closed')),
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### `applications`
+```sql
+CREATE TABLE applications (
+  id              SERIAL PRIMARY KEY,
+  job_id          INTEGER REFERENCES jobs(id),
+  applicant_name  VARCHAR(255) NOT NULL,
+  applicant_email VARCHAR(255) NOT NULL,
+  status          VARCHAR(20) NOT NULL DEFAULT 'submitted'
+                  CHECK (status IN ('submitted','waitlisted','active','ack_pending','hired','rejected','withdrawn')),
+  waitlist_position INTEGER,        -- NULL when active/hired/rejected
+  penalty_count   INTEGER DEFAULT 0, -- increments each decay
+  ack_deadline    TIMESTAMPTZ,       -- set when promoted to ack_pending
+  created_at      TIMESTAMPTZ DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_applications_job_status ON applications(job_id, status);
+CREATE INDEX idx_applications_waitlist   ON applications(job_id, waitlist_position) WHERE status = 'waitlisted';
+```
+
+### `audit_log`
+```sql
+CREATE TABLE audit_log (
+  id              SERIAL PRIMARY KEY,
+  application_id  INTEGER REFERENCES applications(id),
+  job_id          INTEGER REFERENCES jobs(id),
+  from_status     VARCHAR(20),
+  to_status       VARCHAR(20) NOT NULL,
+  reason          VARCHAR(100), -- 'submitted','promoted','decay','withdrawn','hired','rejected'
+  waitlist_pos_before INTEGER,
+  waitlist_pos_after  INTEGER,
+  triggered_by    VARCHAR(50),  -- 'user','system','decay_scheduler'
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### `decay_timers`
+```sql
+CREATE TABLE decay_timers (
+  id              SERIAL PRIMARY KEY,
+  application_id  INTEGER UNIQUE REFERENCES applications(id),
+  ack_deadline    TIMESTAMPTZ NOT NULL,
+  is_processed    BOOLEAN DEFAULT FALSE,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## Backend — services
+
+### 1. Pipeline Engine (`/services/pipelineEngine.js`)
+
+This is the core logic module. Every state transition goes through here.
+
+**`promoteNextWaitlisted(jobId, client)`** — called inside a transaction whenever an active slot opens. It:
+1. Counts current `active` applicants for the job
+2. Fetches capacity from `jobs`
+3. If `active_count < capacity`, selects the waitlisted applicant with the lowest `waitlist_position` using `FOR UPDATE SKIP LOCKED` (handles concurrent promotions)
+4. Sets their status to `ack_pending`, sets `ack_deadline = NOW() + interval '2 hours'`
+5. Inserts a row into `decay_timers`
+6. Compacts remaining waitlist positions
+7. Writes to `audit_log`
+8. Returns the promoted applicant
+
+**`submitApplication(jobId, data)`** — wraps in a transaction:
+1. Counts current `active` count
+2. If `active_count < capacity` → set status `active`, no waitlist position
+3. Else → set status `waitlisted`, assign `waitlist_position = MAX(waitlist_position) + 1`
+4. Log to `audit_log`
+
+**`exitApplication(applicationId, reason)`** — wraps in a transaction:
+1. Sets applicant to `rejected`, `hired`, or `withdrawn`
+2. Calls `promoteNextWaitlisted`
+3. Logs transition
+
+### 2. Decay Scheduler (`/services/decayScheduler.js`)
+
+This is your "cron" built from scratch using `setInterval`. No external libraries.
+
+```
+setInterval(runDecayCheck, 60_000)  // every 60 seconds
+```
+
+**`runDecayCheck()`**:
+1. Queries `decay_timers` where `ack_deadline < NOW() AND is_processed = FALSE`
+2. For each expired timer:
+   a. Begins a transaction
+   b. Fetches the application — verify it's still `ack_pending`
+   c. Calculates penalized waitlist position: `new_position = MAX(waitlist_position) + 1 + (penalty_count * 3)` — each prior decay pushes them further back
+   d. Sets application status back to `waitlisted`, increments `penalty_count`
+   e. Marks `decay_timers.is_processed = TRUE`
+   f. Calls `promoteNextWaitlisted` for the now-vacated slot (cascade)
+   g. Logs to `audit_log` with reason `'decay'`
+3. All inside a single transaction with `FOR UPDATE` lock on the application row to prevent race conditions
+
+**Decay window decision**: 2 hours. Long enough for someone to notice an email, short enough that a job doesn't stall. Configurable via env var `ACK_WINDOW_MINUTES`.
+
+**Penalized repositioning**: `penalty_count * 3` extra positions added each time. First decay: pushed to the back. Second decay: pushed 3 further than the back. This is a strong but fair disincentive.
+
+### 3. Concurrency handling (the simultaneous last-spot problem)
+
+This is documented in the README and handled at the database level.
+
+**Approach: Optimistic locking with `SELECT FOR UPDATE SKIP LOCKED`**
+
+When `submitApplication` runs inside a transaction, it does:
+```sql
+SELECT active_capacity FROM jobs WHERE id = $1 FOR UPDATE;
+```
+This locks the jobs row for the duration of the transaction. The second concurrent request blocks on this lock until the first commits. When it unblocks:
+- If the first request filled the last spot, `active_count` is now equal to `capacity` → second applicant goes to waitlist
+- No applicant is lost, no double-filling occurs
+
+This is documented in `README.md` under "Concurrency" with the exact SQL and an explanation of why application-level locking (like a JS mutex) would fail across multiple Node processes.
+
+---
+
+## REST API — all endpoints
+
+### Auth
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/auth/register` | Register company account |
+| `POST` | `/api/auth/login` | Returns JWT |
+
+### Jobs
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/jobs` | Create job. Body: `{ title, description, active_capacity }` |
+| `GET` | `/api/jobs` | List all jobs for authenticated company |
+| `GET` | `/api/jobs/:id` | Job detail with pipeline counts |
+| `PATCH` | `/api/jobs/:id` | Update capacity or status |
+
+### Applications
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/jobs/:jobId/apply` | Submit application. Body: `{ applicant_name, applicant_email }` |
+| `GET` | `/api/jobs/:jobId/applications` | List all applicants (company view, paginated) |
+| `GET` | `/api/applications/:id/status` | Public status check — no auth. Returns status + queue position |
+| `PATCH` | `/api/applications/:id/status` | Company updates status (reject, hire, advance). Body: `{ status, reason }` |
+| `POST` | `/api/applications/:id/acknowledge` | Applicant acknowledges promotion. Moves from `ack_pending` → `active` |
+| `POST` | `/api/applications/:id/withdraw` | Applicant withdraws, triggers cascade |
+
+### Audit
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/jobs/:jobId/audit` | Full audit trail for a job (company only) |
+| `GET` | `/api/applications/:id/audit` | Audit trail for a single application |
+
+---
+
+## Frontend — pages and components
+
+### Company dashboard (`/dashboard`)
+- **Pipeline board**: columns for Active, Ack Pending, Waitlisted — each showing applicant cards with name, email, time in state, position
+- **Capacity bar**: visual `X / Y active slots used`
+- **Audit trail panel**: collapsible log of all transitions
+- **Actions per card**: Advance → Hired, Reject, details
+
+### Applicant view (`/status?id=<applicationId>`)
+- Single-page, no auth required
+- Shows: current status, queue position if waitlisted, time remaining if `ack_pending`, acknowledge button if `ack_pending`
+- No polling on this page — simple fetch on load + a manual refresh button. Deliberate choice: applicants check when they see an email notification, not in real time.
+
+### Frontend state update strategy (deliberate choice)
+- Company dashboard polls every **30 seconds** using `setInterval` wrapped in a React `useEffect` with cleanup
+- React Query handles caching and deduplication
+- No WebSockets — the system is not real-time by design. A decay event happens on a 2-hour window; 30-second polling is more than sufficient and keeps the backend stateless
+- This is documented in the README
+
+---
+
+## README structure
+
+Your README should cover:
+
+1. **Setup** — `npm install`, `.env` vars (`DATABASE_URL`, `JWT_SECRET`, `ACK_WINDOW_MINUTES`), `npm run migrate`, `npm run dev`
+2. **Architecture decisions** — why polling over WebSockets, why PostgreSQL row locks over app-level queues
+3. **Concurrency approach** — the exact `SELECT FOR UPDATE` strategy with example scenario
+4. **Decay system** — window (2h), penalty formula, cascade behavior, scheduler interval
+5. **API docs** — every endpoint, request shape, response shape, error codes
+6. **State machine** — diagram of all valid transitions
+
+---
+
+## Implementation order
+
+Build in this sequence so each piece is testable before the next depends on it:
+
+1. DB setup + migrations
+2. `jobs` CRUD endpoints
+3. `submitApplication` with capacity check (no decay yet)
+4. `promoteNextWaitlisted` engine
+5. Status exit endpoints (reject/hire/withdraw) + cascade
+6. Decay scheduler + `decay_timers` table
+7. Audit log wiring (add to every transition)
+8. Auth middleware (JWT)
+9. Frontend company dashboard
+10. Frontend applicant status page
+11. README + concurrency documentation
+
+This plan covers all 7 core requirements, all 3 frontend requirements, and all 4 technical requirements. The concurrency problem is solved at the DB layer with `SELECT FOR UPDATE`, the decay cascade is a from-scratch `setInterval` loop, and every transition hits the audit log before committing.

@@ -1,0 +1,582 @@
+/**
+ * Design System - Executive Workspace
+ * Premium Material Design 3 implementation
+ * "The Digital Curator" - Editorial, Sophisticated, Premium
+ */
+
+/* ============================================================================
+   1. ROOT VARIABLES
+   ============================================================================ */
+:root {
+  /* Colors - Material Design 3 Palette */
+  --color-primary: #0053db;
+  --color-primary-dim: #0048c1;
+  --color-primary-container: #dbe1ff;
+  --color-on-primary: #f8f7ff;
+  --color-on-primary-container: #0048bf;
+
+  --color-secondary: #506076;
+  --color-secondary-dim: #44546a;
+  --color-secondary-container: #d3e4fe;
+  --color-on-secondary: #f7f9ff;
+  --color-on-secondary-container: #435368;
+
+  --color-tertiary: #006d4a;
+  --color-tertiary-dim: #005f40;
+  --color-tertiary-container: #69f6b8;
+  --color-on-tertiary: #e6ffee;
+  --color-on-tertiary-container: #005a3c;
+
+  --color-error: #9f403d;
+  --color-error-dim: #4e0309;
+  --color-error-container: #fe8983;
+  --color-on-error: #fff7f6;
+  --color-on-error-container: #752121;
+
+  /* Surface & Background */
+  --color-background: #f7f9fb;
+  --color-surface: #f7f9fb;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-dim: #cfdce3;
+  --color-surface-container: #e8eff3;
+  --color-surface-container-high: #e1e9ee;
+  --color-surface-container-highest: #d9e4ea;
+  --color-surface-container-low: #f0f4f7;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface: #2a3439;
+  --color-on-surface-variant: #566166;
+
+  /* Outline & Borders */
+  --color-outline: #717c82;
+  --color-outline-variant: #a9b4b9;
+
+  /* Inverse */
+  --color-inverse-surface: #0b0f10;
+  --color-inverse-on-surface: #9a9d9f;
+
+  /* Utility */
+  --color-tint: #0053db;
+  --color-fixed-primary: #dbe1ff;
+
+  /* DARK MODE */
+  --dm-background: #0b0f10;
+  --dm-surface: #0f1316;
+  --dm-on-surface: #e3e3e6;
+}
+
+/* ============================================================================
+   2. TYPOGRAPHY SCALE
+   ============================================================================ */
+:root {
+  /* Headings - Manrope */
+  --font-headline-lg: 2rem;
+  --font-headline-sm: 1.5rem;
+  --font-title-lg: 1.375rem;
+  --font-title-md: 1.25rem;
+  --font-title-sm: 1rem;
+
+  /* Body - Inter */
+  --font-body-lg: 1rem;
+  --font-body-md: 0.875rem;
+  --font-body-sm: 0.75rem;
+
+  /* Labels - Inter */
+  --font-label-lg: 0.875rem;
+  --font-label-md: 0.75rem;
+  --font-label-sm: 0.6875rem;
+
+  /* Line Heights */
+  --line-height-headline: 1.4;
+  --line-height-body: 1.6;
+  --line-height-label: 1.4;
+
+  /* Font Families */
+  --font-family-headline: "Manrope", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-family-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ============================================================================
+   3. SPACING SCALE (8px base)
+   ============================================================================ */
+:root {
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+}
+
+/* ============================================================================
+   4. BORDER RADIUS
+   ============================================================================ */
+:root {
+  --radius-none: 0;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
+}
+
+/* ============================================================================
+   5. SHADOWS (Ambient, Soft, Felt Not Seen)
+   ============================================================================ */
+:root {
+  --shadow-none: 0;
+  --shadow-sm: 0 2px 8px rgba(42, 52, 57, 0.04);
+  --shadow-md: 0 4px 12px rgba(42, 52, 57, 0.06);
+  --shadow-lg: 0 12px 32px rgba(42, 52, 57, 0.06);
+  --shadow-xl: 0 20px 48px rgba(42, 52, 57, 0.08);
+}
+
+/* ============================================================================
+   6. ANIMATIONS & TRANSITIONS
+   ============================================================================ */
+:root {
+  --transition-base: 150ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+}
+
+/* ============================================================================
+   7. GLOBAL BASE STYLES
+   ============================================================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-body);
+  font-size: var(--font-body-md);
+  line-height: var(--line-height-body);
+  color: var(--color-on-surface);
+  background-color: var(--color-background);
+  transition: background-color var(--transition-base),
+    color var(--transition-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.dark {
+  background-color: var(--dm-background);
+  color: var(--dm-on-surface);
+}
+
+/* ============================================================================
+   8. TYPOGRAPHY UTILITY CLASSES
+   ============================================================================ */
+.headline-lg {
+  font-family: var(--font-family-headline);
+  font-size: var(--font-headline-lg);
+  font-weight: 700;
+  line-height: var(--line-height-headline);
+  letter-spacing: -0.5px;
+}
+
+.headline-sm {
+  font-family: var(--font-family-headline);
+  font-size: var(--font-headline-sm);
+  font-weight: 700;
+  line-height: var(--line-height-headline);
+  letter-spacing: -0.25px;
+}
+
+.title-lg {
+  font-family: var(--font-family-headline);
+  font-size: var(--font-title-lg);
+  font-weight: 700;
+  line-height: var(--line-height-headline);
+}
+
+.title-md {
+  font-family: var(--font-family-headline);
+  font-size: var(--font-title-md);
+  font-weight: 600;
+  line-height: var(--line-height-headline);
+}
+
+.title-sm {
+  font-family: var(--font-family-headline);
+  font-size: var(--font-title-sm);
+  font-weight: 600;
+  line-height: var(--line-height-body);
+}
+
+.body-lg {
+  font-size: var(--font-body-lg);
+  font-weight: 400;
+  line-height: var(--line-height-body);
+}
+
+.body-md {
+  font-size: var(--font-body-md);
+  font-weight: 400;
+  line-height: var(--line-height-body);
+}
+
+.body-sm {
+  font-size: var(--font-body-sm);
+  font-weight: 400;
+  line-height: var(--line-height-body);
+}
+
+.label-lg {
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  line-height: var(--line-height-label);
+  letter-spacing: 0.5px;
+}
+
+.label-md {
+  font-size: var(--font-label-md);
+  font-weight: 500;
+  line-height: var(--line-height-label);
+  letter-spacing: 0.5px;
+}
+
+.label-sm {
+  font-size: var(--font-label-sm);
+  font-weight: 500;
+  line-height: var(--line-height-label);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+/* ============================================================================
+   9. BUTTONS
+   ============================================================================ */
+button,
+.btn {
+  font-family: var(--font-family-body);
+  font-size: var(--font-label-lg);
+  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  outline: none;
+  user-select: none;
+}
+
+/* Primary Button */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dim) 100%);
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.01);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-dim);
+}
+
+/* Tertiary Button (No Background) */
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.btn-tertiary:hover {
+  background-color: var(--color-primary-container);
+}
+
+/* Danger Button */
+.btn-danger {
+  background-color: var(--color-error);
+  color: var(--color-on-error);
+}
+
+.btn-danger:hover {
+  background-color: var(--color-error-dim);
+}
+
+/* ============================================================================
+   10. INPUT FIELDS (Ghost Border Rule)
+   ============================================================================ */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  font-family: var(--font-family-body);
+  font-size: var(--font-body-md);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid rgba(var(--color-outline-variant-rgb), 0.2);
+  border-radius: var(--radius-lg);
+  color: var(--color-on-surface);
+  transition: all var(--transition-base);
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: var(--color-outline);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 219, 0.1);
+}
+
+/* ============================================================================
+   11. CARDS & CONTAINERS
+   ============================================================================ */
+.card {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.container-primary {
+  background-color: var(--color-surface-container-low);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+}
+
+.container-secondary {
+  background-color: var(--color-surface-container-high);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+}
+
+/* ============================================================================
+   12. STATUS CHIPS
+   ============================================================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-label-sm);
+  font-weight: 500;
+  width: fit-content;
+}
+
+.chip-active {
+  background-color: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+}
+
+.chip-pending {
+  background-color: var(--color-secondary-container);
+  color: var(--color-secondary);
+}
+
+.chip-waitlisted {
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-on-surface-variant);
+}
+
+.chip-rejected {
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+/* ============================================================================
+   13. BADGES & INDICATORS
+   ============================================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-label-sm);
+  font-weight: 600;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* ============================================================================
+   14. DIVIDERS (The "No-Line" Rule: Use Vertical Space Instead)
+   ============================================================================ */
+.divider {
+  height: var(--spacing-sm);
+}
+
+/* Use this for visual separation without a border */
+.divider-subtle {
+  background-color: var(--color-surface-container-low);
+  height: 1px;
+  margin: var(--spacing-md) 0;
+  opacity: 0.5;
+}
+
+/* ============================================================================
+   15. GLASSMORPHISM (Navigation, Quick-View)
+   ============================================================================ */
+.glass {
+  background-color: rgba(247, 249, 251, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+}
+
+.glass.dark {
+  background-color: rgba(11, 15, 16, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================================
+   16. UTILITIES
+   ============================================================================ */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-tertiary {
+  color: var(--color-tertiary);
+}
+
+.text-error {
+  color: var(--color-error);
+}
+
+.text-variant {
+  color: var(--color-on-surface-variant);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+.bg-container {
+  background-color: var(--color-surface-container-low);
+}
+
+/* Spacing Utilities */
+.p-xs {
+  padding: var(--spacing-xs);
+}
+.p-sm {
+  padding: var(--spacing-sm);
+}
+.p-md {
+  padding: var(--spacing-md);
+}
+.p-lg {
+  padding: var(--spacing-lg);
+}
+.p-xl {
+  padding: var(--spacing-xl);
+}
+
+.m-xs {
+  margin: var(--spacing-xs);
+}
+.m-sm {
+  margin: var(--spacing-sm);
+}
+.m-md {
+  margin: var(--spacing-md);
+}
+.m-lg {
+  margin: var(--spacing-lg);
+}
+.m-xl {
+  margin: var(--spacing-xl);
+}
+
+/* Flex Utilities */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gap-xs {
+  gap: var(--spacing-xs);
+}
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+.gap-md {
+  gap: var(--spacing-md);
+}
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headline-lg {
+    font-size: 1.5rem;
+  }
+  .headline-sm {
+    font-size: 1.25rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  body {
+    --color-background: var(--dm-background);
+    --color-surface: var(--dm-surface);
+    --color-on-surface: var(--dm-on-surface);
+  }
+}
