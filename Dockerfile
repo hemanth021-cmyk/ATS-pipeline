@@ -17,5 +17,11 @@ COPY backend ./
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 ENV NODE_ENV=production
 ENV SERVE_STATIC=true
+# -------------------------------------------------
+# Add entrypoint script for pre‑start migrations
+# -------------------------------------------------
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 EXPOSE 3000
-CMD ["sh", "-c", "node scripts/migrate.js && node src/index.js"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["node", "src/index.js"]
