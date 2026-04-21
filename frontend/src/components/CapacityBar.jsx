@@ -9,62 +9,76 @@ export function CapacityBar({ activeCount, capacity }) {
   const isHigh = pct >= 80;
 
   return (
-    <div className="bg-surface-container-low rounded-2xl p-6 shadow-md border border-outline-variant/10">
-      <div className="flex items-end justify-between mb-5">
-        <div className="flex-1">
-          <Label className="text-on-surface-variant block mb-2">Pipeline Occupancy</Label>
-          <div className="flex items-baseline gap-1">
-            <Body className="font-semibold text-on-surface">{a}</Body>
-            <span className="text-on-surface-variant/40">/</span>
-            <Body className="text-on-surface-variant/70">{c} slots</Body>
+    <div className="bg-surface-container-low rounded-[2rem] p-8 flex flex-col gap-6 relative overflow-hidden group">
+      {/* Editorial Header */}
+      <div className="flex items-start justify-between relative z-10">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`w-2 h-2 rounded-full ${
+              isHigh ? 'bg-error animate-pulse' : 'bg-secondary shadow-[0_0_8px_rgba(0,87,189,0.4)]'
+            }`} />
+            <h3 className="text-title-sm font-bold tracking-tight">Pipeline Pulse</h3>
           </div>
+          <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest">
+            Capacity management & occupancy
+          </p>
         </div>
         <div className="text-right">
-          <Body size="sm" className={`font-mono font-semibold transition-colors ${
-            isHigh ? 'text-error' : isMedium ? 'text-tertiary' : 'text-tertiary'
-          }`}>
+          <div className="text-display-sm font-black tracking-tighter opacity-10 leading-none">
             {pct}%
-          </Body>
-          <Label className="text-xs text-on-surface-variant/50 block mt-0.5">
+          </div>
+          <Label size="sm" className="font-bold opacity-60 uppercase tracking-widest text-[10px]">
             {isHigh ? 'Critical' : isMedium ? 'Warning' : 'Optimal'}
           </Label>
         </div>
       </div>
 
-      {/* Progress bar with enhanced styling */}
-      <div className="relative h-2.5 bg-surface-container rounded-full overflow-hidden border border-outline-variant/10 shadow-sm mb-4">
-        <div
-          className={`h-full rounded-full transition-all duration-300 ${
-            isHigh ? 'bg-error shadow-lg shadow-error/20' : isMedium ? 'bg-tertiary shadow-lg shadow-tertiary/20' : 'bg-tertiary shadow-lg shadow-tertiary/15'
-          }`}
-          style={{ width: `${pct}%` }}
-        />
-        {pct > 100 && (
-          <div className="absolute inset-y-0 right-0 w-1 bg-error animate-pulse" />
-        )}
+      <div className="flex items-end gap-6 relative z-10">
+        {/* Metric Large */}
+        <div className="flex items-baseline gap-2">
+          <span className="text-[3.5rem] font-bold tracking-tighter text-on-surface leading-none">
+            {a}
+          </span>
+          <span className="text-display-sm font-black opacity-10 tracking-widest">/ {c}</span>
+        </div>
+
+        {/* Progress bar with enhanced styling */}
+        <div className="flex-1 mb-3">
+          <div className="relative h-4 bg-surface-container rounded-full overflow-hidden shadow-inner">
+            <div
+              className={`h-full rounded-full transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1) ${
+                isHigh ? 'bg-error shadow-[0_0_20px_rgba(179,27,37,0.4)]' : 'bg-gradient-to-r from-secondary to-tertiary'
+              }`}
+              style={{ 
+                width: `${pct}%`,
+                background: !isHigh ? 'linear-gradient(90deg, var(--secondary) 0%, var(--tertiary) 100%)' : undefined 
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Status indicator with icon */}
-      <div className="flex items-center gap-2">
-        {isHigh && (
-          <>
-            <span className="material-symbols-outlined text-sm text-error flex-shrink-0">warning</span>
-            <Body size="sm" className="text-error/80 text-xs">Nearing capacity</Body>
-          </>
-        )}
-        {isMedium && (
-          <>
-            <span className="material-symbols-outlined text-sm text-tertiary flex-shrink-0">info</span>
-            <Body size="sm" className="text-tertiary/80 text-xs">Monitor pipeline health</Body>
-          </>
-        )}
-        {isLow && (
-          <>
-            <span className="material-symbols-outlined text-sm text-tertiary flex-shrink-0">trending_up</span>
-            <Body size="sm" className="text-tertiary/80 text-xs">Capacity available</Body>
-          </>
-        )}
+      <div className="flex items-center gap-4 py-3 px-4 bg-surface-container-lowest rounded-2xl relative z-10 shadow-sm">
+        <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+          <span className={`material-symbols-outlined text-[18px] ${
+            isHigh ? 'text-error animate-pulse' : 'text-secondary'
+          }`}>
+            {isHigh ? 'notifications_active' : isMedium ? 'info' : 'analytics'}
+          </span>
+        </div>
+        <div className="flex-1">
+          <Body size="sm" className="font-bold text-[12px] opacity-80 leading-tight">
+            {isHigh ? 'Critical capacity reached' : isMedium ? 'Moderately occupied' : 'Healthy throughput'}
+          </Body>
+          <p className="text-[10px] opacity-40 font-medium uppercase tracking-widest mt-0.5">
+            {isHigh ? 'Waitlist active' : isMedium ? 'Next slots soon' : 'Fast promotion active'}
+          </p>
+        </div>
       </div>
+
+      {/* Background Flair */}
+      <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary/5 rounded-full blur-[100px] group-hover:bg-secondary/10 transition-all duration-1000" />
     </div>
   );
 }

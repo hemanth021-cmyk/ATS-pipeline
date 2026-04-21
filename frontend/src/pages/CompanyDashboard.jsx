@@ -6,13 +6,12 @@ import { useAuth } from '../auth/AuthContext';
 import { AuditPanel } from '../components/AuditPanel';
 import { CapacityBar } from '../components/CapacityBar';
 import { PipelineBoard } from '../components/PipelineBoard';
-import ThemeToggle from '../components/ThemeToggle';
-import { Button, TextField, Container, Title, Body, Label } from '../components/UI';
+import { Button, TextField, Container, Title, Body, Label, TonalContainer } from '../components/UI';
 
 const POLL_MS = 30_000;
 
 export function CompanyDashboard() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const jobIdParam = searchParams.get('job');
@@ -133,156 +132,187 @@ export function CompanyDashboard() {
       return;
     }
     createJobMutation.mutate({ title, active_capacity, description });
+    e.target.reset();
   }
 
   return (
-    <div className="bg-background min-h-screen">
-      {/* Header - Asymmetrical Premium Design */}
-      <header className="bg-surface-container-low border-b border-outline-variant/10 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-8 py-8">
-          <div className="flex items-end justify-between gap-6">
-            {/* Left: Brand with Editorial Feel */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="material-symbols-outlined text-primary text-2xl">pipeline</span>
-                <h1 className="title-lg text-on-surface tracking-tight truncate">Executive Pipeline</h1>
+    <div className="bg-background min-h-screen text-on-surface">
+      {/* Editorial Navigation Bar */}
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-surface-container-highest/20">
+        <div className="max-w-[1600px] mx-auto px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-primary text-[18px]">all_inclusive</span>
               </div>
-              <p className="body-sm text-on-surface-variant/70">Hiring Intelligence System</p>
+              <Title size="sm" className="font-black tracking-tighter">FLUX</Title>
             </div>
             
-            {/* Right: Actions */}
-            <div className="flex items-center gap-4 flex-shrink-0">
-              <ThemeToggle />
-              <Button variant="tertiary" size="sm" onClick={() => logout()} className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">logout</span>
-                Sign Out
-              </Button>
+            <div className="h-6 w-[1px] bg-surface-container opacity-20" />
+            
+            <div className="flex items-center gap-6">
+              <select
+                value={validJobId ? String(validJobId) : ''}
+                onChange={handleJobChange}
+                disabled={jobs.length === 0}
+                className="bg-transparent border-none text-[13px] font-bold uppercase tracking-widest outline-none cursor-pointer hover:text-primary transition-colors pr-8 appearance-none"
+                style={{ 
+                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right center',
+                  backgroundSize: '1em'
+                }}
+              >
+                {jobs.length === 0 && <option value="">No Active Instances</option>}
+                {jobs.map((j) => (
+                  <option key={j.id} value={j.id} className="bg-surface text-on-surface">
+                    ({j.status.toUpperCase()}) {j.title}
+                  </option>
+                ))}
+              </select>
+              {job && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full">
+                  <div className={`w-1.5 h-1.5 rounded-full ${job.status === 'open' ? 'bg-tertiary shadow-[0_0_8px_rgba(0,188,212,0.4)]' : 'bg-on-surface-variant/30'}`} />
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{job.status}</span>
+                </div>
+              )}
             </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="text-right hidden md:block">
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-30">Authentificated as</p>
+              <p className="text-[12px] font-bold tracking-tight">{user?.name || 'Curator'}</p>
+            </div>
+            <button 
+              onClick={() => logout()}
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-highest transition-colors group"
+            >
+              <span className="material-symbols-outlined text-[18px] opacity-40 group-hover:opacity-100 transition-opacity">logout</span>
+            </button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      <main className="max-w-7xl mx-auto px-8 py-12 space-y-10">
-        {/* Job Selection Section - Tonal Layering */}
-        <section className="bg-surface-container-low rounded-2xl p-8">
-          <div className="flex items-center justify-between mb-6">
-            <Title size="sm" className="text-on-surface">Active Positions</Title>
-            <Label className="text-on-surface-variant/70 text-xs">Auto-syncs every {POLL_MS / 1000}s</Label>
-          </div>
-          <div className="flex items-center gap-4">
-            <select
-              value={validJobId ? String(validJobId) : ''}
-              onChange={handleJobChange}
-              disabled={jobs.length === 0}
-              className="flex-1 px-5 py-3.5 rounded-xl border border-outline-variant/20 bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary/15 focus:border-primary/50 transition-all duration-200 outline-none hover:border-outline-variant/30"
-            >
-              {jobs.length === 0 && <option value="">No positions yet</option>}
-              {jobs.map((j) => (
-                <option key={j.id} value={j.id}>
-                  {j.title} (#{j.id}) — {j.status}
-                </option>
-              ))}
-            </select>
-            {job && (
-              <span className={`px-4 py-2 rounded-full text-label-xs font-semibold whitespace-nowrap ${
-                job.status === 'open'
-                  ? 'bg-tertiary-container text-on-tertiary-container'
-                  : 'bg-outline-variant/20 text-on-surface-variant'
-              }`}>
-                {job.status === 'open' ? '● Open' : '● Closed'}
-              </span>
-            )}
-          </div>
-          {jobsQuery.isError && (
-            <div className="mt-4 p-4 bg-error-container/10 border border-error/20 rounded-xl">
-              <Body size="sm" className="text-error">Could not load positions. Please try again.</Body>
-            </div>
-          )}
-        </section>
+      <main className="max-w-[1600px] mx-auto px-8 py-12">
+        <div className="grid grid-cols-12 gap-12">
+          
+          {/* Main Pipeline Area */}
+          <div className="col-span-12 xl:col-span-9 space-y-12">
+            
+            {/* Page Header */}
+            <header className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <Label className="uppercase tracking-[0.3em] font-black text-[10px] opacity-40 mb-3 block">Perspective / Control Room</Label>
+              <h2 className="text-[4rem] font-black tracking-tighter leading-none mb-6">
+                {job?.title || 'Pipeline Overview'}
+              </h2>
+              {job?.description && (
+                <p className="text-lg font-medium opacity-40 max-w-2xl leading-relaxed">
+                  {job.description}
+                </p>
+              )}
+            </header>
 
-        {/* Create New Position - Premium Card */}
-        <section className="bg-surface-container-low rounded-2xl p-8">
-          <div className="mb-6">
-            <Title size="sm" className="text-on-surface mb-2">Open New Position</Title>
-            <Body size="sm" className="text-on-surface-variant/75">
-              Define hiring parameters and capacity constraints for your role.
-            </Body>
-          </div>
-          <form onSubmit={handleCreateJob} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <TextField
-                name="title"
-                label="Position Title"
-                placeholder="e.g. Senior Product Manager"
-                required
-              />
-              <TextField
-                name="active_capacity"
-                label="Active Capacity"
-                type="number"
-                min="1"
-                defaultValue="3"
-                required
-              />
-              <TextField
-                name="description"
-                label="Team Context (Optional)"
-                placeholder="Department, team details..."
-              />
-            </div>
-            {createError && (
-              <div className="p-4 bg-error-container/10 border border-error/20 rounded-xl">
-                <Body size="sm" className="text-error">{createError}</Body>
+            {job && counts && (
+              <div className="space-y-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <CapacityBar activeCount={activeCount} capacity={capacity} />
+                
+                <section className="space-y-8">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Title size="sm" className="font-bold tracking-tight">Curation Grid</Title>
+                      <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest mt-1">Real-time candidate orchestration</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(0,87,189,0.4)] animate-pulse" />
+                      <span className="text-[10px] font-black uppercase tracking-widest opacity-30">Live Sync Engaged</span>
+                    </div>
+                  </div>
+                  
+                  <PipelineBoard
+                    applications={applicationsQuery.data || []}
+                    onHire={onHire}
+                    onReject={onReject}
+                    busyId={busyId}
+                  />
+                </section>
               </div>
             )}
-            <div className="flex justify-end pt-2">
-              <Button
-                variant="primary"
-                disabled={createJobMutation.isPending}
-              >
-                {createJobMutation.isPending ? 'Creating…' : 'Launch Position'}
-              </Button>
-            </div>
-          </form>
-        </section>
 
-        {/* Job Details */}
-        {validJobId && jobDetailQuery.isError && (
-          <div className="p-6 bg-error-container/10 border border-error/20 rounded-xl mb-8">
-            <Body className="text-error">Could not load position #{validJobId} details. Please refresh.</Body>
+            {!validJobId && !jobsQuery.isLoading && (
+              <div className="py-40 text-center space-y-6">
+                <span className="material-symbols-outlined text-[80px] opacity-10">layers_clear</span>
+                <Title className="font-black tracking-tight opacity-20">No Active Pipeline Instances</Title>
+                <p className="text-[11px] font-black uppercase tracking-widest opacity-30">Create your first position to begin curation</p>
+              </div>
+            )}
           </div>
-        )}
 
-        {job && counts && (
-          <>
-            <CapacityBar activeCount={activeCount} capacity={capacity} />
+          {/* Sidebar Area */}
+          <aside className="col-span-12 xl:col-span-3 space-y-10 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             
-            <section className="space-y-4">
-              <Title size="sm" className="text-on-surface">Candidate Pipeline</Title>
-              <PipelineBoard
-                applications={applicationsQuery.data || []}
-                onHire={onHire}
-                onReject={onReject}
-                busyId={busyId}
-              />
-            </section>
+            {/* Create Job Card */}
+            <TonalContainer className="p-8 rounded-[2.5rem] bg-surface-container-low shadow-xl">
+              <Title size="sm" className="font-bold tracking-tight mb-2">Initiate Position</Title>
+              <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest mb-8">Role Curation Parameters</p>
+              
+              <form onSubmit={handleCreateJob} className="space-y-6">
+                <TextField
+                  name="title"
+                  label="Role Signature"
+                  placeholder="e.g. Design Partner"
+                  required
+                />
+                <TextField
+                  name="active_capacity"
+                  label="Focus Threshold"
+                  type="number"
+                  min="1"
+                  defaultValue="3"
+                  required
+                />
+                <TextField
+                  name="description"
+                  label="Context / Ethos"
+                  placeholder="Optional team nuances..."
+                />
+                {createError && (
+                  <div className="p-4 bg-error-container/10 rounded-2xl">
+                    <p className="text-[10px] font-bold text-error uppercase tracking-widest text-center">{createError}</p>
+                  </div>
+                )}
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="w-full py-4 text-[12px] font-black uppercase tracking-widest"
+                  disabled={createJobMutation.isPending}
+                  loading={createJobMutation.isPending}
+                >
+                  Create Instance
+                </Button>
+              </form>
+            </TonalContainer>
 
-            <AuditPanel
-              entries={auditQuery.data}
-              loading={auditQuery.isLoading}
-              error={auditQuery.isError ? 'Failed to load audit trail' : null}
-            />
-          </>
-        )}
-
-        {validJobId && jobDetailQuery.isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="space-y-4 text-center">
-              <div className="w-8 h-8 mx-auto border-3 border-primary/20 border-t-primary rounded-full animate-spin" />
-              <Body className="text-on-surface-variant">Loading position details…</Body>
-            </div>
-          </div>
-        )}
+            {/* Audit History */}
+            {validJobId && (
+              <div className="space-y-6">
+                <div className="px-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <Title size="sm" className="font-bold tracking-tight">Lineage</Title>
+                    <span className="text-[10px] font-black opacity-20 tracking-widest">REAL-TIME</span>
+                  </div>
+                  <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest">Protocol Audit Trail</p>
+                </div>
+                
+                <AuditPanel
+                  entries={auditQuery.data}
+                  loading={auditQuery.isLoading}
+                  error={auditQuery.isError ? 'Stream Disconnected' : null}
+                />
+              </div>
+            )}
+          </aside>
+        </div>
       </main>
     </div>
   );

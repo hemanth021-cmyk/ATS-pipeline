@@ -1,10 +1,28 @@
 import { ApplicantCard } from './ApplicantCard';
-import { Title, Label } from './UI';
+import { Title, Label, TonalContainer } from './UI';
 
 const MAIN = [
-  { key: 'active', title: 'Active', icon: 'verified_user', colorClass: 'bg-tertiary-container' },
-  { key: 'ack_pending', title: 'Awaiting Confirmation', icon: 'schedule', colorClass: 'bg-secondary-container' },
-  { key: 'waitlisted', title: 'Waitlist', icon: 'queue', colorClass: 'bg-surface-container-highest' },
+  { 
+    key: 'active', 
+    title: 'Active Pipeline', 
+    description: 'Candidates currently being reviewed.',
+    icon: 'verified_user', 
+    color: 'var(--tertiary)' 
+  },
+  { 
+    key: 'ack_pending', 
+    title: 'Awaiting Action', 
+    description: 'Pending promote confirmation.',
+    icon: 'schedule', 
+    color: 'var(--secondary)' 
+  },
+  { 
+    key: 'waitlisted', 
+    title: 'Queue / Waitlist', 
+    description: 'Next in line for promotion.',
+    icon: 'queue', 
+    color: 'var(--primary)' 
+  },
 ];
 
 function inMainColumns(status) {
@@ -16,36 +34,76 @@ export function PipelineBoard({ applications, onHire, onReject, busyId }) {
   const other = applications.filter((a) => !inMainColumns(a.status));
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {MAIN.map((col) => (
-        <section key={col.key} className="bg-surface-container-low rounded-2xl p-6 flex flex-col min-h-96 shadow-md border border-outline-variant/10">
-          {/* Column Header - Editorial Style */}
-          <div className="mb-6 pb-5 border-b border-outline-variant/20">
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg text-on-surface-variant">{col.icon}</span>
-                <Title size="sm" className="text-on-surface">{col.title}</Title>
+        <div key={col.key} className="flex flex-col min-h-[600px] animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          {/* Column Header - Editorial Gallery Style */}
+          <div className="mb-6 px-1">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-container shadow-sm">
+                  <span className="material-symbols-outlined text-[20px]" style={{ color: col.color }}>{col.icon}</span>
+                </div>
+                <Title size="sm" className="font-bold tracking-tight">{col.title}</Title>
               </div>
+              <span className="text-[12px] font-black opacity-20 tracking-tighter">
+                {byStatus(col.key).length.toString().padStart(2, '0')}
+              </span>
             </div>
-            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-label-sm font-bold ${
-              col.key === 'active' 
-                ? 'bg-tertiary-container text-on-tertiary-container'
-                : col.key === 'ack_pending'
-                ? 'bg-secondary-container text-on-secondary-container'
-                : 'bg-outline-variant/20 text-on-surface-variant'
-            }`}>
-              {byStatus(col.key).length}
-            </span>
+            <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest pl-[52px]">
+              {col.description}
+            </p>
           </div>
 
-          {/* Cards Container - With breathing room */}
-          <div className="flex-1 space-y-3 overflow-y-auto pr-2">
-            {byStatus(col.key).length === 0 && (
-              <div className="flex items-center justify-center h-48">
-                <Label className="text-on-surface-variant/50 italic">No applicants</Label>
+          {/* Cards Column - Tonal background shift without border */}
+          <TonalContainer className="flex-1 flex flex-col gap-4 p-4 !bg-surface-container-low/40">
+            {byStatus(col.key).length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center opacity-20 grayscale">
+                <span className="material-symbols-outlined text-[48px] mb-2">inbox</span>
+                <Label size="sm" className="font-bold uppercase tracking-widest">Empty</Label>
               </div>
+            ) : (
+              byStatus(col.key).map((app) => (
+                <ApplicantCard
+                  key={app.id}
+                  application={app}
+                  onHire={onHire}
+                  onReject={onReject}
+                  busyId={busyId}
+                />
+              ))
             )}
-            {byStatus(col.key).map((app) => (
+          </TonalContainer>
+        </div>
+      ))}
+
+      {/* Terminal States Column - Outcomes */}
+      <div className="flex flex-col min-h-[600px] animate-fade-in" style={{ animationDelay: '0.4s' }}>
+        <div className="mb-6 px-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-container shadow-sm">
+                <span className="material-symbols-outlined text-[20px] text-on-surface-variant">auto_awesome</span>
+              </div>
+              <Title size="sm" className="font-bold tracking-tight">Outcomes</Title>
+            </div>
+            <span className="text-[12px] font-black opacity-20 tracking-tighter">
+              {other.length.toString().padStart(2, '0')}
+            </span>
+          </div>
+          <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest pl-[52px]">
+            Final decisions & history
+          </p>
+        </div>
+
+        <TonalContainer className="flex-1 flex flex-col gap-4 p-4 !bg-surface-container-low/40">
+          {other.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center opacity-20 grayscale">
+              <span className="material-symbols-outlined text-[48px] mb-2">history_edu</span>
+              <Label size="sm" className="font-bold uppercase tracking-widest">No History</Label>
+            </div>
+          ) : (
+            other.map((app) => (
               <ApplicantCard
                 key={app.id}
                 application={app}
@@ -53,41 +111,10 @@ export function PipelineBoard({ applications, onHire, onReject, busyId }) {
                 onReject={onReject}
                 busyId={busyId}
               />
-            ))}
-          </div>
-        </section>
-      ))}
-
-      {/* Terminal States Column - Outcomes */}
-      <section className="bg-surface-container-low rounded-2xl p-6 flex flex-col min-h-96 shadow-md border border-outline-variant/10">
-        <div className="mb-6 pb-5 border-b border-outline-variant/20">
-          <div className="flex items-start justify-between gap-3 mb-2">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-lg text-on-surface-variant">check_circle</span>
-              <Title size="sm" className="text-on-surface">Outcomes</Title>
-            </div>
-          </div>
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full text-label-sm font-bold bg-outline-variant/20 text-on-surface-variant">
-            {other.length}
-          </span>
-        </div>
-        <div className="flex-1 space-y-3 overflow-y-auto pr-2">
-          {other.length === 0 && (
-            <div className="flex items-center justify-center h-48">
-              <Label className="text-on-surface-variant/50 italic">None yet</Label>
-            </div>
+            ))
           )}
-          {other.map((app) => (
-            <ApplicantCard
-              key={app.id}
-              application={app}
-              onHire={onHire}
-              onReject={onReject}
-              busyId={busyId}
-            />
-          ))}
-        </div>
-      </section>
+        </TonalContainer>
+      </div>
     </div>
   );
 }

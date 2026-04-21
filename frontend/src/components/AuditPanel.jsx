@@ -1,89 +1,107 @@
 import { useState } from 'react';
-import { Title, Label, Body } from './UI';
+import { Title, Label, Body, TonalContainer } from './UI';
 
 export function AuditPanel({ entries, loading, error }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="bg-surface-container-low rounded-2xl p-6 shadow-md border border-outline-variant/10">
+    <div className="flex flex-col gap-4">
+      {/* Header / Toggle */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="w-full flex items-center justify-between gap-3 py-3 hover:bg-surface-container/50 px-2 rounded-lg transition-colors group"
+        className="group relative flex items-center justify-between p-6 bg-surface-container-low rounded-3xl transition-all hover:bg-surface-container hover:shadow-md overflow-hidden"
       >
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">history</span>
-          <Title size="sm" className="text-on-surface group-hover:text-primary transition-colors">Audit Trail</Title>
+        <div className="flex items-center gap-4 z-10">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-highest/50">
+            <span className="material-symbols-outlined text-[20px] text-primary">history</span>
+          </div>
+          <div>
+            <Title size="sm" className="font-bold tracking-tight">Audit Trail / History</Title>
+            <p className="text-[11px] opacity-40 font-medium uppercase tracking-widest text-left">
+              Pipeline State transitions
+            </p>
+          </div>
         </div>
-        <span className={`material-symbols-outlined text-on-surface-variant transition-transform duration-300 ${
-          open ? 'rotate-180' : ''
-        }`}>
-          expand_more
-        </span>
+        <div className="flex items-center gap-4 z-10">
+          {entries?.length > 0 && (
+            <span className="px-3 py-1 bg-surface-container-highest rounded-full text-[10px] font-black opacity-40">
+              {entries.length} EVENTS
+            </span>
+          )}
+          <span className={`material-symbols-outlined text-primary/40 transition-transform duration-500 ${
+            open ? 'rotate-180' : ''
+          }`}>
+            stat_1
+          </span>
+        </div>
+        {/* Subtle background flair */}
+        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
       </button>
 
+      {/* Panel Body */}
       {open && (
-        <div className="mt-6 pt-6 border-t border-outline-variant/15 space-y-3">
-          {loading && (
-            <div className="flex items-center gap-2 py-8">
-              <div className="w-4 h-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-              <Label className="text-on-surface-variant/50">Loading…</Label>
+        <TonalContainer className="flex flex-col gap-3 animate-fade-in !bg-transparent p-0">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 opacity-30">
+              <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
+              <Label className="uppercase tracking-widest font-black text-[10px]">Synchronizing...</Label>
             </div>
-          )}
-          {error && (
-            <div className="bg-error-container/10 border border-error/20 rounded-xl p-4 mb-4">
-              <Body size="sm" className="text-error">{error}</Body>
+          ) : error ? (
+            <div className="p-8 text-center bg-error-container/10 rounded-3xl border border-error/5">
+              <Body size="sm" className="text-error font-medium">{error}</Body>
             </div>
-          )}
-          {!loading && !error && (!entries || entries.length === 0) && (
-            <Label className="text-on-surface-variant/50 block text-center py-8">No events yet</Label>
-          )}
-          {!loading && entries && entries.length > 0 && (
+          ) : !entries || entries.length === 0 ? (
+            <div className="py-20 text-center opacity-20">
+              <span className="material-symbols-outlined text-[48px] mb-2">auto_stories</span>
+              <Label className="block uppercase tracking-widest font-black text-[10px]">No History Yet</Label>
+            </div>
+          ) : (
             <div className="space-y-3">
               {entries.map((row) => (
                 <div
                   key={row.id}
-                  className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/10 hover:border-outline-variant/30 hover:shadow-sm transition-all"
+                  className="group flex flex-col gap-3 p-6 bg-surface-container-lowest rounded-3xl transition-all hover:bg-surface-bright hover:shadow-lg border border-transparent hover:border-surface-container"
                 >
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <time className="label-xs text-on-surface-variant font-mono block">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_rgba(0,87,189,0.4)]" />
+                      <time className="text-[12px] font-bold text-on-surface opacity-80">
                         {new Date(row.created_at).toLocaleTimeString([], {
                           hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit'
+                          minute: '2-digit'
                         })}
                       </time>
-                      <span className="block label-xs text-on-surface-variant/50 mt-0.5">
-                        {new Date(row.created_at).toLocaleDateString()}
+                      <span className="text-[10px] uppercase font-black opacity-20 tracking-tighter">
+                        {new Date(row.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
-                  </div>
-                  <div className="mb-2">
-                    <div className="flex items-center gap-2 flex-wrap text-sm">
-                      <span className="label-sm font-semibold text-on-surface">
-                        {row.from_status || '○ initial'}
-                      </span>
-                      <span className="text-on-surface-variant/30">→</span>
-                      <span className="label-sm font-semibold text-tertiary">
-                        {row.to_status}
-                      </span>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-full">
+                      <span className="text-[10px] font-bold opacity-40 uppercase">{row.from_status || 'Start'}</span>
+                      <span className="text-[10px] opacity-20">→</span>
+                      <span className="text-[10px] font-black text-secondary uppercase">{row.to_status}</span>
                     </div>
                   </div>
-                  {(row.reason || row.triggered_by) && (
-                    <Body size="sm" className="text-on-surface-variant/70 text-xs">
-                      {row.reason && <span>{row.reason}</span>}
-                      {row.reason && row.triggered_by && <span> · </span>}
-                      {row.triggered_by && <span className="text-on-surface-variant/50">{row.triggered_by}</span>}
-                    </Body>
+                  
+                  {row.reason && (
+                    <p className="text-[13px] font-medium text-on-surface-variant leading-relaxed pl-4.5 border-l-2 border-surface-container">
+                      {row.reason}
+                    </p>
+                  )}
+                  
+                  {row.triggered_by && (
+                    <div className="flex items-center gap-2 pl-5 opacity-40">
+                      <span className="text-[10px]">BY</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{row.triggered_by}</span>
+                    </div>
                   )}
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </TonalContainer>
       )}
-    </section>
+    </div>
   );
 }

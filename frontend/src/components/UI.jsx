@@ -1,6 +1,6 @@
 /**
  * UI Component Library
- * Executive Workspace Design System
+ * Flux Talent Design System - "The Digital Curator"
  */
 import React from 'react';
 import '../design-system.css';
@@ -15,34 +15,31 @@ export const Headline = ({ size = 'lg', children, className = '' }) => {
 
 export const Title = ({ size = 'lg', children, className = '' }) => {
   const sizeClass = {
-    lg: 'title-lg',
-    md: 'title-md',
-    sm: 'title-sm',
-  }[size] || 'title-lg';
+    lg: 'text-title-lg',
+    md: 'text-title-md',
+    sm: 'text-title-sm',
+  }[size] || 'text-title-lg';
   return <h2 className={`${sizeClass} ${className}`}>{children}</h2>;
 };
 
 export const Body = ({ size = 'md', children, className = '' }) => {
   const sizeClass = {
-    lg: 'body-lg',
-    md: 'body-md',
-    sm: 'body-sm',
-  }[size] || 'body-md';
+    lg: 'text-body-lg',
+    md: 'text-body-md',
+    sm: 'text-body-sm',
+  }[size] || 'text-body-md';
   return <p className={`${sizeClass} ${className}`}>{children}</p>;
 };
 
 export const Label = ({ size = 'md', children, className = '' }) => {
   const sizeClass = {
-    lg: 'label-lg',
-    md: 'label-md',
-    sm: 'label-sm',
-  }[size] || 'label-md';
+    lg: 'text-label-lg',
+    md: 'text-label-md',
+    sm: 'text-label-sm',
+  }[size] || 'text-label-md';
   return <span className={`${sizeClass} ${className}`}>{children}</span>;
 };
 
-/* ============================================================================
-   BUTTON COMPONENTS
-   ============================================================================ */
 export const Button = ({
   variant = 'primary',
   size = 'md',
@@ -50,38 +47,29 @@ export const Button = ({
   onClick,
   disabled = false,
   className = '',
-  icon: Icon,
+  icon,
   ...props
 }) => {
   const variantClass = {
-    primary: 'btn-primary',
-    secondary: 'btn-secondary',
-    tertiary: 'btn-tertiary',
-    danger: 'btn-danger',
-  }[variant] || 'btn-primary';
-
-  const sizeClass = {
-    sm: 'py-1.5 px-3 text-sm',
-    md: 'py-2 px-4',
-    lg: 'py-3 px-6',
-  }[size] || 'py-2 px-4';
+    primary: 'btn-flux-primary',
+    secondary: 'btn-flux-ghost',
+    tertiary: 'btn-flux-tertiary',
+    danger: 'bg-error text-on-primary',
+  }[variant] || 'btn-flux-primary';
 
   return (
     <button
-      className={`btn ${variantClass} ${sizeClass} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      className={`btn-flux ${variantClass} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
       onClick={onClick}
       disabled={disabled}
       {...props}
     >
-      {Icon && <Icon size={18} />}
+      {icon && <span className="material-symbols-outlined text-[18px]">{icon}</span>}
       {children}
     </button>
   );
 };
 
-/* ============================================================================
-   INPUT COMPONENTS
-   ============================================================================ */
 export const TextField = ({
   label,
   type = 'text',
@@ -90,20 +78,20 @@ export const TextField = ({
   onChange,
   error = false,
   helperText = '',
-  icon: Icon,
+  icon,
   ...props
 }) => {
   return (
     <div className="space-y-2">
       {label && (
-        <label className="label-sm block">
+        <label className="text-label-sm block opacity-70 uppercase tracking-widest font-semibold">
           {label}
         </label>
       )}
       <div className="relative">
-        {Icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-outline pointer-events-none">
-            <Icon size={18} />
+        {icon && (
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center text-outline pointer-events-none">
+            <span className="material-symbols-outlined text-[20px]">{icon}</span>
           </div>
         )}
         <input
@@ -111,14 +99,14 @@ export const TextField = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`${Icon ? 'pl-10' : ''} w-full px-4 py-3 bg-surface-container-lowest border border-outline rounded-lg text-on-surface placeholder-outline focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all ${
-            error ? 'border-error' : ''
+          className={`${icon ? 'pl-12' : 'px-5'} w-full py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder-outline focus:ring-2 focus:ring-primary/10 transition-all ${
+            error ? 'bg-error-container/20 ring-1 ring-error' : ''
           }`}
           {...props}
         />
       </div>
       {helperText && (
-        <span className={`label-sm block ${error ? 'text-error' : 'text-variant'}`}>
+        <span className={`text-label-sm block ${error ? 'text-error' : 'opacity-60'}`}>
           {helperText}
         </span>
       )}
@@ -131,19 +119,15 @@ export const TextField = ({
    ============================================================================ */
 export const Card = ({ children, className = '', ...props }) => {
   return (
-    <div className={`card ${className}`} {...props}>
+    <div className={`surface-card ${className}`} {...props}>
       {children}
     </div>
   );
 };
 
-export const Container = ({ variant = 'primary', children, className = '', ...props }) => {
-  const variantClass = {
-    primary: 'container-primary',
-    secondary: 'container-secondary',
-  }[variant] || 'container-primary';
+export const TonalContainer = ({ children, className = '', ...props }) => {
   return (
-    <div className={`${variantClass} ${className}`} {...props}>
+    <div className={`tonal-section ${className}`} {...props}>
       {children}
     </div>
   );
@@ -154,18 +138,18 @@ export const Container = ({ variant = 'primary', children, className = '', ...pr
    ============================================================================ */
 export const Chip = ({ status, label, children, className = '' }) => {
   const statusClass = {
-    active: 'chip-active',
-    pending: 'chip-pending',
-    ack_pending: 'chip-pending',
-    waitlisted: 'chip-waitlisted',
-    rejected: 'chip-rejected',
-    withdrawn: 'chip-rejected',
-    hired: 'chip-active',
-    default: 'chip-pending',
-  }[status] || 'chip-pending';
+    active: 'chip-flux--active',
+    pending: 'chip-flux--pending',
+    ack_pending: 'chip-flux--pending',
+    waitlisted: 'chip-flux--waitlisted',
+    rejected: 'bg-error-container text-on-error-container',
+    withdrawn: 'bg-surface-container-highest text-on-surface-variant',
+    hired: 'chip-flux--active',
+    default: 'chip-flux--pending',
+  }[status] || 'chip-flux--pending';
 
   return (
-    <span className={`chip ${statusClass} ${className}`}>
+    <span className={`chip-flux ${statusClass} ${className}`}>
       {label || children}
     </span>
   );
@@ -176,7 +160,7 @@ export const Chip = ({ status, label, children, className = '' }) => {
    ============================================================================ */
 export const Badge = ({ count, className = '' }) => {
   return (
-    <span className={`badge ${className}`}>
+    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-on-secondary text-[10px] font-bold">
       {count > 99 ? '99+' : count}
     </span>
   );
@@ -187,39 +171,24 @@ export const Badge = ({ count, className = '' }) => {
    ============================================================================ */
 export const Header = ({ children, className = '' }) => {
   return (
-    <header className={`bg-surface border-b border-surface-container p-6 ${className}`}>
+    <header className={`p-8 ${className}`}>
       {children}
     </header>
   );
 };
 
-export const Footer = ({ children, className = '' }) => {
-  return (
-    <footer className={`bg-surface border-t border-surface-container p-6 ${className}`}>
-      {children}
-    </footer>
-  );
-};
-
 export const Sidebar = ({ children, className = '' }) => {
   return (
-    <aside className={`glass w-64 h-screen fixed left-0 top-0 p-6 overflow-y-auto ${className}`}>
+    <aside className={`glass w-80 h-screen fixed left-0 top-0 p-10 overflow-y-auto hidden lg:block ${className}`}>
       {children}
     </aside>
   );
 };
 
-/* ============================================================================
-   LIST COMPONENTS
-   ============================================================================ */
-export const List = ({ items, renderItem, className = '' }) => {
+export const Container = ({ children, className = '', ...props }) => {
   return (
-    <div className={`space-y-2 ${className}`}>
-      {items.map((item, idx) => (
-        <div key={idx} className="hover:bg-surface-container-low p-3 rounded-lg transition-colors">
-          {renderItem(item)}
-        </div>
-      ))}
+    <div className={`max-w-[1600px] mx-auto px-8 ${className}`} {...props}>
+      {children}
     </div>
   );
 };
@@ -231,14 +200,14 @@ export const Modal = ({ isOpen, onClose, title, children, className = '' }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className={`relative bg-surface rounded-2xl p-8 max-w-md w-full shadow-xl ${className}`}>
-        <div className="flex justify-between items-center mb-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+      <div className="fixed inset-0 bg-primary/20 backdrop-blur-md" onClick={onClose} />
+      <div className={`relative bg-surface rounded-3xl p-10 max-w-lg w-full shadow-2xl animate-fade-in ${className}`}>
+        <div className="flex justify-between items-center mb-8">
           <Title size="md">{title}</Title>
           <button
             onClick={onClose}
-            className="text-outline hover:text-on-surface transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-colors"
           >
             ✕
           </button>
@@ -254,43 +223,24 @@ export const Modal = ({ isOpen, onClose, title, children, className = '' }) => {
    ============================================================================ */
 export const Loading = () => {
   return (
-    <div className="flex-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+    <div className="flex items-center justify-center py-20">
+      <div className="w-12 h-12 border-4 border-surface-container border-t-secondary rounded-full animate-spin" />
     </div>
   );
 };
 
-export const EmptyState = ({ icon: Icon, title, description }) => {
+export const EmptyState = ({ icon, title, description }) => {
   return (
-    <div className="flex-center flex-col h-64 text-center">
-      {Icon && <Icon size={48} className="text-outline mb-4 opacity-50" />}
-      <Title size="sm" className="text-on-surface-variant mb-2">
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center mb-6">
+        {icon && <span className="material-symbols-outlined text-[32px] opacity-40">{icon}</span>}
+      </div>
+      <Title size="sm" className="mb-2 opacity-80">
         {title}
       </Title>
-      <Body size="sm" className="text-on-surface-variant">
+      <Body size="sm" className="opacity-50 max-w-xs mx-auto">
         {description}
       </Body>
-    </div>
-  );
-};
-
-/* ============================================================================
-   TOAST/NOTIFICATION COMPONENTS
-   ============================================================================ */
-export const Toast = ({ type = 'info', message, onClose }) => {
-  const typeClass = {
-    success: 'bg-tertiary-container text-on-tertiary-container',
-    error: 'bg-error-container text-on-error-container',
-    info: 'bg-primary-container text-on-primary-container',
-    warning: 'bg-secondary-container text-on-secondary-container',
-  }[type] || 'bg-primary-container text-on-primary-container';
-
-  return (
-    <div className={`${typeClass} rounded-lg p-4 flex justify-between items-center shadow-lg`}>
-      <span className="label-md">{message}</span>
-      <button onClick={onClose} className="ml-4 font-bold">
-        ✕
-      </button>
     </div>
   );
 };
@@ -304,14 +254,12 @@ export default {
   TextField,
   Card,
   Container,
+  TonalContainer,
   Chip,
   Badge,
   Header,
-  Footer,
   Sidebar,
-  List,
   Modal,
   Loading,
   EmptyState,
-  Toast,
 };

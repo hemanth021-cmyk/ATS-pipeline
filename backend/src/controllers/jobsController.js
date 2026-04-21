@@ -2,6 +2,22 @@
  * HTTP handlers for /api/jobs.
  * Business rules for applications and pipeline locking live in services (later steps).
  */
+/**
+ * Jobs Controller
+ * ----------------
+ * This module implements the HTTP handlers for the `/api/jobs` endpoints.
+ * It contains the core business rules for creating jobs, updating capacity,
+ * and automatically promoting wait‑listed candidates when a slot opens.
+ *
+ * Important notes for future developers:
+ *   • All state transitions are logged in the `pipeline_history` table.
+ *   • The `decayScheduler` (see `services/decayScheduler.js`) periodically
+ *     demotes inactive candidates, ensuring the pipeline stays fresh.
+ *   • The controller is deliberately kept framework‑agnostic – it only
+ *     depends on the PostgreSQL `pool` and the custom `AppError` class.
+ *   • When running inside the Antigravity IDE, the environment variables are
+ *     loaded from a `.env` file (which is ignored via `.gitignore`).
+ */
 const { pool } = require('../db/pool');
 const { AppError } = require('../middleware/errorHandler');
 

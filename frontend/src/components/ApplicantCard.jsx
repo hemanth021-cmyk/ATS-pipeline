@@ -1,6 +1,6 @@
 import { formatRelative } from '../utils/time';
 import { StatusBadge } from './StatusBadge';
-import { Button, Body, Label } from './UI';
+import { Button, Body, Label, Card } from './UI';
 
 export function ApplicantCard({ application, onHire, onReject, busyId }) {
   const { id, applicant_name, applicant_email, status, waitlist_position, updated_at, ack_deadline } =
@@ -10,60 +10,69 @@ export function ApplicantCard({ application, onHire, onReject, busyId }) {
   const canReject = !['hired', 'rejected', 'withdrawn'].includes(status);
 
   return (
-    <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-200 border border-outline-variant/5 hover:border-outline-variant/15 group">
+    <Card className="group animate-fade-in">
       {/* Header: Name and Status */}
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <h4 className="title-sm text-on-surface flex-1 truncate group-hover:text-primary transition-colors">{applicant_name}</h4>
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="flex-1 truncate">
+          <h4 className="text-title-sm font-bold text-on-surface group-hover:text-secondary transition-colors truncate">
+            {applicant_name}
+          </h4>
+          <p className="text-body-sm opacity-60 truncate">{applicant_email}</p>
+        </div>
         <StatusBadge status={status} />
       </div>
 
-      {/* Email */}
-      <p className="body-sm text-on-surface-variant/80 mb-2.5 truncate">{applicant_email}</p>
-
       {/* Meta info */}
-      <div className="space-y-2 mb-4 text-xs">
+      <div className="space-y-2 mb-6">
         {status === 'waitlisted' && waitlist_position != null && (
-          <Label className="text-tertiary block font-semibold">
-            Queue position #{waitlist_position}
-          </Label>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-outline animate-pulse" />
+            <Label size="sm" className="text-outline font-bold">
+              Queue position #{waitlist_position}
+            </Label>
+          </div>
         )}
         {status === 'ack_pending' && ack_deadline && (
-          <Label className="text-error block font-medium">
-            ⏰ {new Date(ack_deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </Label>
+          <div className="flex items-center gap-2 py-2 px-3 rounded-lg bg-error-container/10 border border-error/10">
+            <span className="text-sm">⏰</span>
+            <Label size="sm" className="text-error font-bold">
+              Deadline: {new Date(ack_deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Label>
+          </div>
         )}
-        <Body size="sm" className="text-on-surface-variant/60 text-xs">
-          {formatRelative(updated_at)}
-        </Body>
+        <div className="flex items-center gap-2 opacity-40">
+          <span className="text-[10px]">●</span>
+          <Body size="sm" className="text-[11px] font-medium tracking-tight">
+            {formatRelative(updated_at)}
+          </Body>
+        </div>
       </div>
 
       {/* Actions */}
       {(canHire || canReject) && (
-        <div className="flex gap-2 pt-2 border-t border-outline-variant/10">
+        <div className="flex gap-3 pt-4 border-t border-surface-container-low transition-colors group-hover:border-surface-container">
           {canHire && (
             <Button
               variant="primary"
-              size="sm"
               disabled={busy}
               onClick={() => onHire(id)}
-              className="flex-1 text-xs py-2"
+              className="flex-1 py-3 text-[11px] uppercase tracking-widest"
             >
-              {busy ? '…' : 'Hire'}
+              {busy ? '…' : 'Promote to Hire'}
             </Button>
           )}
           {canReject && (
             <Button
-              variant="tertiary"
-              size="sm"
+              variant="secondary"
               disabled={busy}
               onClick={() => onReject(id)}
-              className="flex-1 text-xs py-2"
+              className="flex-1 py-3 text-[11px] uppercase tracking-widest"
             >
               Reject
             </Button>
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }
