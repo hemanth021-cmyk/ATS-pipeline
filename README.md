@@ -1,116 +1,94 @@
 # Flux Talent ATS (Digital Curator)
 
 ## 🚀 Live Demo
-**Render URL:https://flux-talent-ats.onrender.com/login
+**Render URL:** https://flux-talent-ats.onrender.com/login
 
 ---
 
-## 🎯 What Problem Does This Solve?
-Flux Talent ATS is a **premium, AI‑enhanced applicant tracking system** that automates the entire hiring pipeline:
-- **Capacity‑aware job postings** – only a configurable number of active candidates are shown.
-- **Automatic promotion** – when a slot opens, the next wait‑listed applicant is promoted instantly.
-- **Inactivity decay** – idle candidates are demoted after a configurable timeout.
-- **Full audit trail** – every state transition is logged for compliance and analytics.
-- **Antigravity‑ready** – built and tested inside the Antigravity IDE, leveraging its AI‑assisted development workflow.
+## 🏗️ System Architecture
+
+Our architecture guarantees a seamless, automated flow from waitlisted candidate to active evaluation, handling high-concurrency environments with zero manual intervention.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Waitlist: Application Submitted
+    Waitlist --> Active: Capacity Opens (Promoted)
+    Active --> Decay: No Acknowledgement (Timeout)
+    Decay --> Waitlist: Penalized Repositioning
+    Active --> [*]: Acknowledged / Proceed
+```
 
 ---
 
-## 📸 Screenshots & Demo
-![Login Page](C:\Users\heman\.gemini\antigravity\brain\12cbb08f-f350-49ee-9e35-dcf012945e6b\click_feedback_1776753580461.png)
+## ⚡ Core Engineering Strategies
 
-<details>
-  <summary>🖥️ Full UI Walkthrough (click to expand)</summary>
-  
-  ![UI Walkthrough](C:\Users\heman\.gemini\antigravity\brain\12cbb08f-f350-49ee-9e35-dcf012945e6b\final_fixed_ui_walkthrough_1776753853222.webp)
-</details>
+### Handling Race Conditions (Concurrency Integrity)
+A critical requirement of our architecture is ensuring that if two applicants attempt to claim a spot at the exact same millisecond, the system maintains strict capacity limits. 
+- **Row-Level Locking:** We utilize PostgreSQL's `SELECT ... FOR UPDATE` row-level locking natively in our database transactions. This guarantees atomic consistency during state transitions, meaning only one candidate is granted the "Active" slot while the other is strictly bounded to the Waitlist queue.
 
----
+### Inactivity Decay Logic
+To keep the pipeline moving without bottlenecks, we implemented **Penalized Repositioning**. 
+- When an applicant fails to acknowledge their promotion within the configured time limit, their `priority_score` is reduced by 20%, and they are explicitly re-inserted into the Waitlist loop. This auto-curation avoids manual HR intervention and ensures only engaged talent consumes the Active pipeline slots.
 
-## 🛠️ Tech Stack
-![HTML5](https://img.shields.io/badge/HTML5-%23E34F26?style=flat&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-%231572B6?style=flat&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-%23F7DF1E?style=flat&logo=javascript&logoColor=black)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
-![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
-![Antigravity IDE](https://img.shields.io/badge/Antigravity-FF6F61?style=flat&logo=google&logoColor=white)
+### Automated Decay Cascade
+The requirement dictates that the cascade continues *without anyone touching it manually*. 
+- We engineered a headless `setInterval` daemon natively within `backend/src/index.js` that executes a cleanup query every minute. This autonomous worker continuously finds all Active users past their timeout, securely demotes them, and recursively triggers the promotion cascade for the next Waitlisted person natively in the database.
+
+### Full Traceability
+We believe in 100% data provenance, aligning directly with enterprise auditing requirements.
+- **AuditLog Table:** Every singular state transition (Application -> Waitlist -> Promotion -> Decay) is strictly captured in a centralized `AuditLog` table. This allows for a full topological reconstruction of pipeline history at any given timestamp.
 
 ---
 
-## 📦 Installation & Setup (Local Development)
+## 📦 API Documentation
+
+| Endpoint | Method | Input (JSON format) | Output (Success) |
+|----------|--------|---------------------|------------------|
+| `/api/apply` | `POST` | `{ "name": "John Doe", "email": "john@example.com" }` | `201: { "status": "waitlisted", "position": 5 }` |
+| `/api/status/:id` | `GET` | *URL Parameter `id`* | `200: { "status": "active", "time_remaining": "2h" }` |
+| `/api/acknowledge` | `POST` | `{ "id": "123", "token": "abc..." }` | `200: { "status": "acknowledged" }` |
+
+---
+
+## 🗄️ Database Schema & Constraints
+
+Our database architecture strictly enforces data integrity:
+- **Constraints:** Enforced Unique Keys on candidate emails and Foreign Keys linking Candidate IDs to the AuditLog to prevent orphan records. 
+- **Initialization:** Refer to our `schema.sql` for the complete entity-relationship structure.
+
+---
+
+## ⚖️ Architectural Trade-Offs
+
+**Polling-Based Decay Checker vs Local Queue**  
+- **Decision:** We actively chose a Polling-based decay checker (`setInterval`) inside the Express server instead of an external persistent worker.
+- **Why:** This kept the MVP ultra-lightweight, minimizing moving parts and adhering stringently to the "No third-party libraries" (such as external queue dependencies like RabbitMQ) rule, while guaranteeing execution. 
+- **Future State:** With extended time and complex horizontal scaling, we would evolve this into a dedicated Redis-backed custom event scheduler to decouple the worker load from the core API layer.
+
+---
+
+## 🛠️ Installation & Setup (Local Development)
+
+This project is truly runnable locally with pre-populated dummy data for immediate testing.
+
 ```bash
-# 1️⃣ Clone the repo
+# 1. Clone the repo
 git clone https://github.com/hemanth021-cmyk/ATS-pipeline.git
 cd ATS-pipeline
 
-# 2️⃣ Install backend dependencies
+# 2. Setup Database & Seed Dummy Data
+# Run the seed file to populate the dashboard immediately (avoiding manual creation of 20 applicants)
+psql $DATABASE_URL < ./db/schema.sql
+psql $DATABASE_URL < ./db/seed.sql
+
+# 3. Install & Start Backend
 cd backend
 npm install
+npm start   # Runs the server AND the autonomous decay background worker
 
-# 3️⃣ Install frontend dependencies
+# 4. Install & Start Frontend
 cd ../frontend
 npm install
-
-# 4️⃣ Create a .env file (copy from .env.example) and set your PostgreSQL URL
-cp .env.example .env
-# Edit .env → set DATABASE_URL, JWT_SECRET, etc.
-
-# 5️⃣ Run the database migrations (if any) – you can use any tool you prefer.
-# Example with psql:
-psql $DATABASE_URL < ./db/schema.sql
-
-# 6️⃣ Start the backend (in one terminal)
-cd ../backend
-npm start   # runs src/index.js on port 3000
-
-# 7️⃣ Start the frontend dev server (in another terminal)
-cd ../frontend
-npm run dev   # runs Vite on port 5174 (proxy → backend)
+npm run dev # Runs Vite dev server
 ```
-Open `http://localhost:5174` in your browser – you should see the polished login screen.
-
----
-
-## 🧪 Running Tests
-```bash
-# Backend tests (Jest)
-cd backend && npm test
-
-# Frontend tests (Vitest)
-cd ../frontend && npm run test
-```
-All tests pass in CI.
-
----
-
-## 🛠️ Development Environment
-- **Antigravity IDE** – the project was built using the Antigravity AI‑assisted IDE, which provides real‑time code suggestions, linting, and automated refactoring.
-- **TailwindCSS** – custom design tokens are defined in `frontend/src/design-system.css` and are consumed via Tailwind utilities for a **glassmorphism** look.
-- **Vite Proxy** – `vite.config.js` forwards `/api` and `/health` calls to the Express backend (`localhost:3000`).
-
----
-
-## 🤝 Contributing
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/awesome‑feature`).
-3. Follow the existing code style (ESLint + Prettier).
-4. Submit a Pull Request with a clear description of the change.
-
----
-
-## 📄 License
-MIT License – see the `LICENSE` file for details.
-
----
-
-## 📌 Repository Metadata (GitHub Sidebar)
-- **About:** Flux Talent ATS – AI‑enhanced hiring pipeline with auto‑promotion and decay.
-- **Topics:** `web-development`, `react`, `nodejs`, `postgresql`, `antigravity-ide`, `tailwindcss`, `ats`.
-- **Social Preview:** Upload a custom image (e.g., the login screenshot) via *Settings → General* for a professional link preview.
-
----
-
-*Built with love, AI, and a dash of design magic.*
+*Note: Make sure to copy `.env.example` to `.env` and configure your credentials. Do not commit secrets!*
