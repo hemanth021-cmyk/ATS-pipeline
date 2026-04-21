@@ -29,7 +29,8 @@ Then set environment variables in Vercel Dashboard (see `VERCEL_DEPLOYMENT.md` f
 
 Alternatively, connect your GitHub repo directly in Vercel Dashboard for automatic deployments.
 
-**See [`VERCEL_DEPLOYMENT.md`](./VERCEL_DEPLOYMENT.md) for complete deployment guide.**
+**See [`RENDER_DEPLOYMENT.md`](./RENDER_DEPLOYMENT.md) for the recommended unified hosting guide.**
+**See [`VERCEL_DEPLOYMENT.md`](./VERCEL_DEPLOYMENT.md) for split-service hosting (Serverless).**
 
 ---
 
