@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
-import { Title, Label, Body, Button, TextField, TonalContainer } from '../components/UI';
 import '../design-system.css';
 
 export function Login() {
@@ -53,147 +52,177 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen flex bg-background selection:bg-primary/20">
-      {/* Editorial Hero Panel (Hidden on Mobile) */}
-      <div className="hidden lg:flex w-1/2 flex-col justify-between p-16 relative overflow-hidden bg-surface">
-        <div className="z-10 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="flex items-center gap-3 mb-12">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-on-primary">all_inclusive</span>
-            </div>
-            <Title className="font-black tracking-tighter text-2xl">FLUX TALENT</Title>
-          </div>
-          
-          <div className="space-y-6 max-w-md">
-            <h1 className="text-[4.5rem] font-black leading-[0.9] tracking-tighter text-on-surface">
-              CURATE <br />
-              YOUR <br />
-              <span className="text-primary italic">PIPELINE.</span>
-            </h1>
-            <p className="text-lg text-on-surface-variant font-medium leading-relaxed opacity-60">
-              Transform standard recruitment into an high-fidelity editorial experience. Experience the Digital Curator.
-            </p>
+    <div className="bg-background font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen">
+      {/* TopNavBar */}
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-4 max-w-full bg-[#f5f7fa]/70 backdrop-blur-md dark:bg-slate-900/70 shadow-sm dark:shadow-none">
+        <div className="flex items-center gap-12">
+          <span className="text-xl font-bold tracking-tighter text-[#006575] dark:text-[#54e0fd] font-headline">BioSynth Precision</span>
+          <div className="hidden md:flex gap-8">
+            <a className="font-headline font-bold tracking-tight text-sm text-slate-600 dark:text-slate-400 font-medium hover:text-[#0055c4] transition-colors duration-300" href="#">Platform</a>
+            <a className="font-headline font-bold tracking-tight text-sm text-slate-600 dark:text-slate-400 font-medium hover:text-[#0055c4] transition-colors duration-300" href="#">Research</a>
+            <a className="font-headline font-bold tracking-tight text-sm text-slate-600 dark:text-slate-400 font-medium hover:text-[#0055c4] transition-colors duration-300" href="#">Compliance</a>
           </div>
         </div>
+        <div className="flex items-center gap-6">
+          <span className="font-headline font-bold tracking-tight text-sm text-slate-600 dark:text-slate-400 font-medium cursor-pointer hover:text-[#0055c4]">Support</span>
+          <div className="h-4 w-[1px] bg-outline-variant opacity-20"></div>
+          <span className="font-headline font-bold tracking-tight text-sm text-[#006575] dark:text-[#54e0fd] cursor-pointer">System Status</span>
+        </div>
+      </nav>
 
-        <div className="z-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <div className="flex gap-12">
-            <div>
-              <div className="text-[10px] font-black tracking-[0.2em] opacity-30 uppercase mb-2">Automated</div>
-              <div className="text-xl font-bold opacity-60">Waitlist Flow</div>
-            </div>
-            <div>
-              <div className="text-[10px] font-black tracking-[0.2em] opacity-30 uppercase mb-2">Decay</div>
-              <div className="text-xl font-bold opacity-60">Smart Purges</div>
-            </div>
-            <div>
-              <div className="text-[10px] font-black tracking-[0.2em] opacity-30 uppercase mb-2">Audit</div>
-              <div className="text-xl font-bold opacity-60">Full Lineage</div>
-            </div>
+      {/* Separation Logic */}
+      <div className="fixed top-[68px] w-full bg-[#eef1f4] dark:bg-slate-800 h-[1px] z-40"></div>
+
+      <main className={`min-h-screen pt-32 pb-20 px-8 lg:px-24 flex flex-col lg:flex-row items-center justify-between gap-16 relative overflow-hidden transition-all duration-1000 ${isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        
+        {/* Abstract Background Element */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-tertiary/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        {/* Left Content: Bold Headline & Metrics */}
+        <div className="w-full lg:w-1/2 z-10">
+          <div className="inline-block px-3 py-1 mb-8 rounded-full bg-surface-container-low border border-outline-variant/10">
+            <span className="label-sm font-label uppercase text-[0.625rem] tracking-[0.2em] text-on-surface-variant font-bold">Advanced Clinical Infrastructure</span>
           </div>
+          <h1 className="font-headline text-5xl lg:text-7xl font-extrabold tracking-tighter text-on-surface leading-[1.1] mb-6">
+            CURATE YOUR <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-container">PIPELINE</span>
+          </h1>
+          <p className="font-body text-lg text-on-surface-variant max-w-md mb-12 leading-relaxed">
+            Seamlessly orchestrate complex biomedical workflows with the BioSynth Precision engine. Experience near-zero latency in clinical data synthesis.
+          </p>
         </div>
 
-        {/* Dynamic Background Flair */}
-        <div className="absolute top-1/4 -right-20 w-80 h-80 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute -bottom-20 -left-20 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px]" />
-      </div>
-
-      {/* Login Form Panel */}
-      <div className="flex-1 flex flex-col justify-center items-center p-8 bg-surface-container-lowest lg:p-24">
-        <div className={`w-full max-w-sm transition-all duration-1000 ${isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-12">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <span className="material-symbols-outlined text-on-primary">all_inclusive</span>
+        {/* Right Content: Refined Auth Card */}
+        <div className="w-full lg:w-[460px] z-10">
+          <div className="glass-panel p-10 rounded-xl border border-outline-variant/15 shadow-2xl shadow-on-surface/[0.04]">
+            <div className="mb-10">
+              <h2 className="font-headline text-2xl font-bold text-on-surface mb-2 border-b-2 border-transparent">
+                {mode === 'login' ? 'Access Portal' : 'Initialize Instance'}
+              </h2>
+              <p className="font-body text-sm text-on-surface-variant">
+                {mode === 'login' 
+                  ? 'Enter your credentials to initiate clinical session.' 
+                  : 'Register secure company infrastructure.'}
+              </p>
             </div>
-            <Title className="font-black tracking-tighter">FLUX TALENT</Title>
-          </div>
 
-          <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-display-sm font-black tracking-tight text-on-surface mb-2">
-              {mode === 'login' ? 'Authentication' : 'Initiation'}
-            </h2>
-            <p className="text-on-surface-variant font-medium opacity-60 uppercase tracking-[0.1em] text-[10px]">
-              {mode === 'login' ? 'Enter the workspace' : 'Create your company instance'}
-            </p>
-          </div>
-
-          <TonalContainer className="p-8 lg:p-10 rounded-[2.5rem] bg-surface-container-low shadow-xl">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {mode === 'register' && (
-                <TextField
-                  label="Company Name"
-                  placeholder="The Curation Group"
-                  icon="apartment"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              )}
+            <form className="space-y-8" onSubmit={handleSubmit}>
               
-              <TextField
-                label="Corporate Access"
-                type="email"
-                placeholder="curator@fluxtalent.com"
-                icon="mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              {/* Name Field (Register Mode Only) */}
+              {mode === 'register' && (
+                 <div className="space-y-2 group fade-in">
+                 <label className="font-label text-[0.6875rem] uppercase tracking-widest text-on-surface-variant font-semibold">Instance Designator</label>
+                 <div className="relative">
+                   <input 
+                     className="w-full bg-transparent border-0 border-b border-outline-variant/30 py-3 focus:ring-0 focus:border-primary focus:outline-none transition-all duration-500 placeholder:text-outline-variant/50 font-body text-on-surface" 
+                     placeholder="The Curation Group" 
+                     type="text" 
+                     value={name}
+                     onChange={(e) => setName(e.target.value)}
+                     required 
+                   />
+                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within:w-full transition-all duration-500"></div>
+                 </div>
+               </div>
+              )}
 
-              <TextField
-                label="Secure Key"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                icon="lock"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                suffix={
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="opacity-40 hover:opacity-100 transition-opacity">
-                    <span className="material-symbols-outlined text-[20px]">
+              {/* Email Field */}
+              <div className="space-y-2 group">
+                <label className="font-label text-[0.6875rem] uppercase tracking-widest text-on-surface-variant font-semibold">Scientific ID</label>
+                <div className="relative">
+                  <input 
+                    className="w-full bg-transparent border-0 border-b border-outline-variant/30 py-3 focus:ring-0 focus:border-primary focus:outline-none transition-all duration-500 placeholder:text-outline-variant/50 font-body text-on-surface" 
+                    placeholder="name@biosynth.com" 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required 
+                  />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within:w-full transition-all duration-500"></div>
+                </div>
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-2 group">
+                <div className="flex justify-between items-center">
+                  <label className="font-label text-[0.6875rem] uppercase tracking-widest text-on-surface-variant font-semibold">Access Key</label>
+                  {mode === 'login' && (
+                    <a className="font-label text-[0.625rem] text-secondary hover:opacity-80 transition-opacity uppercase tracking-widest font-bold" href="#">Key Recovery</a>
+                  )}
+                </div>
+                <div className="relative flex items-center">
+                  <input 
+                    className="w-full bg-transparent border-0 border-b border-outline-variant/30 py-3 focus:ring-0 focus:border-primary focus:outline-none transition-all duration-500 placeholder:text-outline-variant/50 font-body text-on-surface pr-10" 
+                    placeholder="••••••••" 
+                    type={showPassword ? 'text' : 'password'} 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required 
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 opacity-40 hover:opacity-100 transition-opacity pb-1">
+                    <span className="material-symbols-outlined text-[18px]">
                       {showPassword ? 'visibility_off' : 'visibility'}
                     </span>
                   </button>
-                }
-              />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within:w-[calc(100%-40px)] transition-all duration-500"></div>
+                </div>
+              </div>
 
+              {/* Error Message */}
               {error && (
-                <div className="p-4 bg-error-container/10 border border-error/5 rounded-2xl animate-fade-in">
-                  <p className="text-[11px] font-bold text-error uppercase tracking-widest text-center">{error}</p>
+                <div className="p-3 bg-error-container/10 border border-error/5 rounded-lg animate-fade-in">
+                  <p className="text-[0.6875rem] font-bold text-error uppercase tracking-widest text-center">{error}</p>
                 </div>
               )}
 
-              <Button
-                type="submit"
-                variant="primary"
-                className="w-full py-4 text-[13px] tracking-widest font-black uppercase"
-                disabled={loading}
-                loading={loading}
-              >
-                {mode === 'login' ? 'Sign In' : 'Register'}
-              </Button>
+              {/* Submit Button */}
+              <div className="pt-4">
+                <button 
+                  className="w-full bg-gradient-to-br from-primary to-primary-container py-4 rounded-full font-headline font-bold text-on-primary-container shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-70 disabled:pointer-events-none" 
+                  type="submit"
+                  disabled={loading}
+                >
+                  <span>{loading ? 'PROCESSING...' : (mode === 'login' ? 'AUTHORIZE SESSION' : 'ESTABLISH INSTANCE')}</span>
+                  {!loading && <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>}
+                </button>
+              </div>
+
+              {/* Toggle Mode */}
+              <div className="relative flex items-center justify-center py-4">
+                <div className="absolute w-full h-[1px] bg-outline-variant/10"></div>
+                <span className="relative px-4 bg-surface-container-lowest/50 backdrop-blur-sm font-label text-[0.625rem] text-outline-variant uppercase tracking-[0.2em]">OR EXPLORE OPTIONS</span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                <button 
+                  className="flex items-center justify-center gap-2 py-3 rounded-lg border border-outline-variant/20 font-body text-xs text-on-surface hover:bg-surface-container-low transition-colors uppercase tracking-widest font-bold" 
+                  type="button"
+                  onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+                >
+                  {mode === 'login' ? 'Create New Account' : 'Return to Authorization'}
+                </button>
+              </div>
             </form>
-
-            <div className="mt-8 pt-8 border-t border-surface-container text-center">
-              <button
-                type="button"
-                className="text-[11px] font-black uppercase tracking-[0.15em] text-on-surface-variant hover:text-primary transition-colors"
-                onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-              >
-                {mode === 'login' ? "Establish new account →" : "← Identification recognized"}
-              </button>
-            </div>
-          </TonalContainer>
-
-          <div className="mt-12 text-center opacity-30">
-            <p className="text-[9px] font-black uppercase tracking-[0.3em]">
-              Executive Hiring Platform • v2.0 Flux
-            </p>
           </div>
+          
+          <p className="mt-8 text-center font-label text-[0.6875rem] text-on-surface-variant tracking-wider">
+            System Infrastructure managed by <span className="text-primary font-semibold">BioSynth Precision Ops</span>
+          </p>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-6 bg-[#eef1f4] dark:bg-slate-950">
+        <div className="flex flex-wrap justify-center gap-8 order-2 md:order-1">
+          <a className="font-['Inter'] text-[0.6875rem] uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-[#006575] transition-opacity duration-200" href="#">Terms of Service</a>
+          <a className="font-['Inter'] text-[0.6875rem] uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-[#006575] transition-opacity duration-200" href="#">Privacy Policy</a>
+          <a className="font-['Inter'] text-[0.6875rem] uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-[#006575] transition-opacity duration-200" href="#">System Status</a>
+        </div>
+        <p className="font-['Inter'] text-[0.6875rem] uppercase tracking-widest text-slate-500 dark:text-slate-400 order-1 md:order-2 text-center md:text-right">
+            © 2024 Clinical Transcendence Technologies. Technical Infrastructure v4.2.0
+        </p>
+      </footer>
     </div>
   );
 }

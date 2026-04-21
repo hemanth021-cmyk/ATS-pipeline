@@ -121,3 +121,22 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--outline);
 }
+
+/* Futuristic App Theme Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+.dark .glass-panel {
+  background: rgba(11, 15, 17, 0.7);
+}
+
+.text-glow {
+  text-shadow: 0 0 15px rgba(84, 224, 253, 0.4);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
