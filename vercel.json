@@ -1,0 +1,66 @@
+{
+  "version": 2,
+  "public": false,
+  "buildCommand": "npm run build:all",
+  "outputDirectory": "frontend/dist",
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "JWT_EXPIRES_IN": "7d",
+    "ACK_WINDOW_MINUTES": "120",
+    "DECAY_CHECK_INTERVAL_MS": "60000",
+    "CORS_ORIGIN": "@cors_origin",
+    "NODE_ENV": "production",
+    "PORT": "3000",
+    "VITE_API_URL": "@vite_api_url"
+  },
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs18.x",
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, immutable"
+        }
+      ]
+    }
+  ]
+}

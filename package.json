@@ -8,6 +8,7 @@
     "dev:web": "npm --prefix frontend run dev",
     "build": "npm run install:all && npm run build:web",
     "build:web": "npm --prefix frontend run build",
+    "build:all": "npm install --prefix backend && npm install --prefix frontend && npm run build:web",
     "start": "npm run start:api",
     "start:api": "npm --prefix backend run migrate && npm --prefix backend start",
     "start:prod": "SET NODE_ENV=production&& SET SERVE_STATIC=true&& npm run start:api",

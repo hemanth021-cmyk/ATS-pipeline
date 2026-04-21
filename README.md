@@ -9,10 +9,27 @@ ats-pipeline/
 ├── backend/          # Express + pg
 │   ├── src/db/init.sql
 │   └── src/services/pipelineEngine.js, decayScheduler.js
-└── frontend/         # Vite + React + TanStack Query
+├── frontend/         # Vite + React + TanStack Query
+├── api/              # Vercel serverless handler
+└── vercel.json       # Vercel deployment config
 ```
 
 From this folder you can run **`npm run install:all`** once, then two terminals: **`npm run dev:api`** and **`npm run dev:web`**.
+
+## Quick Deployment
+
+### Deploy to Vercel (Recommended)
+
+```bash
+npm install -g vercel
+vercel deploy
+```
+
+Then set environment variables in Vercel Dashboard (see `VERCEL_DEPLOYMENT.md` for details).
+
+Alternatively, connect your GitHub repo directly in Vercel Dashboard for automatic deployments.
+
+**See [`VERCEL_DEPLOYMENT.md`](./VERCEL_DEPLOYMENT.md) for complete deployment guide.**
 
 ---
 
@@ -303,7 +320,31 @@ Workflow **`.github/workflows/ci.yml`**: on push/PR to `main`, `master`, or `dev
 
 4. **Health** — Monitor `GET /health`.
 
+## Tradeoffs and Future Considerations
+
+### Tradeoffs
+
+1.  **In-Process Scheduler vs. Redis/Bull**: To meet the "No third-party queue" requirement, the decay scheduler uses `setInterval` in the Node process.
+    -   *Pros*: Zero infrastructure overhead, fulfills project constraints.
+    -   *Cons*: Not horizontally scalable (multiple replicas would run overlapping checks). For production scaling, this would be moved to a Postgres-backed worker (e.g., `graphile-worker`) or a dedicated cron service.
+2.  **Polling vs. WebSockets**:
+    -   *Pros*: Simple, stateless, handles high latency or intermittent connections gracefully.
+    -   *Cons*: Up to 30 seconds of UI lag for pipeline updates. Given most hiring cycles take days, this is an acceptable tradeoff for tool simplicity.
+3.  **Atomic DB Transactions over JS Locks**:
+    -   *Pros*: Thread-safe even across multiple Node instances connecting to the same DB.
+    -   *Cons*: Slightly higher DB load due to row locks, but minimal for a small team tool.
+
+### What I'd Change with More Time
+
+1.  **Real-Time Subscriptions**: Use Postgres `LISTEN/NOTIFY` or Supabase-style real-time updates to eliminate polling.
+2.  **Email Integration**: Replace the mock `notificationService.js` with a real SendGrid or Postmark integration to notify applicants when they are promoted.
+3.  **Analytics Dashboard**: Add time-to-hire and waitlist churn metrics for companies to evaluate their pipeline efficiency.
+4.  **Bulk Actions**: Allow company admins to bulk reject or move multiple candidates at once.
+5.  **Multi-Stage Pipeline**: Currently, the system has one "Active" bucket and one "Waitlist" bucket. Real ATS tools often have "Initial Screen," "Interview," "Technical," etc.
+6.  **Full Test Suite**: While smoke tests exist, I would add full integration tests with `supertest` for every race condition and edge case in the state machine.
+
 ---
+
 
 ## License
 
