@@ -1,7 +1,7 @@
 # Flux Talent ATS (Digital Curator)
 
 ## 🚀 Live Demo
-**Render URL:** https://flux-talent-ats.onrender.com *(replace with your actual URL after deployment)*
+**Render URL:https://flux-talent-ats.onrender.com/login
 
 ---
 
